@@ -13,15 +13,15 @@ func yaml_insert_token(parser *yaml_parser_t, pos int, token *yaml_token_t) {
 		if parser.tokens_head != len(parser.tokens) {
 			copy(parser.tokens, parser.tokens[parser.tokens_head:])
 		}
-		parser.tokens = parser.tokens[:len(parser.tokens) - parser.tokens_head]
+		parser.tokens = parser.tokens[:len(parser.tokens)-parser.tokens_head]
 		parser.tokens_head = 0
 	}
 	parser.tokens = append(parser.tokens, *token)
 	if pos < 0 {
 		return
 	}
-	copy(parser.tokens[parser.tokens_head + pos + 1:], parser.tokens[parser.tokens_head + pos:])
-	parser.tokens[parser.tokens_head + pos] = *token
+	copy(parser.tokens[parser.tokens_head+pos+1:], parser.tokens[parser.tokens_head+pos:])
+	parser.tokens[parser.tokens_head+pos] = *token
 }
 
 // Create a new parser object.
@@ -270,7 +270,7 @@ func yaml_stream_end_event_initialize(event *yaml_event_t) bool {
 
 // Create DOCUMENT-START.
 func yaml_document_start_event_initialize(event *yaml_event_t, version_directive *yaml_version_directive_t,
-tag_directives []yaml_tag_directive_t, implicit bool) bool {
+	tag_directives []yaml_tag_directive_t, implicit bool) bool {
 	*event = yaml_event_t{
 		typ:               yaml_DOCUMENT_START_EVENT,
 		version_directive: version_directive,

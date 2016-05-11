@@ -132,7 +132,7 @@ func structPointer_ExtMap(p structPointer, f field) *map[int32]Extension {
 
 // NewAt returns the reflect.Value for a pointer to a field in the struct.
 func structPointer_NewAt(p structPointer, f field, typ reflect.Type) reflect.Value {
-	return reflect.NewAt(typ, unsafe.Pointer(uintptr(p) + uintptr(f)))
+	return reflect.NewAt(typ, unsafe.Pointer(uintptr(p)+uintptr(f)))
 }
 
 // SetStructPointer writes a *struct field in the struct.
@@ -153,15 +153,9 @@ func structPointer_StructPointerSlice(p structPointer, f field) *structPointerSl
 // A structPointerSlice represents a slice of pointers to structs (themselves submessages or groups).
 type structPointerSlice []structPointer
 
-func (v *structPointerSlice) Len() int {
-	return len(*v)
-}
-func (v *structPointerSlice) Index(i int) structPointer {
-	return (*v)[i]
-}
-func (v *structPointerSlice) Append(p structPointer) {
-	*v = append(*v, p)
-}
+func (v *structPointerSlice) Len() int                  { return len(*v) }
+func (v *structPointerSlice) Index(i int) structPointer { return (*v)[i] }
+func (v *structPointerSlice) Append(p structPointer)    { *v = append(*v, p) }
 
 // A word32 is the address of a "pointer to 32-bit value" field.
 type word32 **uint32
@@ -212,15 +206,9 @@ func structPointer_Word32Val(p structPointer, f field) word32Val {
 // A word32Slice is a slice of 32-bit values.
 type word32Slice []uint32
 
-func (v *word32Slice) Append(x uint32) {
-	*v = append(*v, x)
-}
-func (v *word32Slice) Len() int {
-	return len(*v)
-}
-func (v *word32Slice) Index(i int) uint32 {
-	return (*v)[i]
-}
+func (v *word32Slice) Append(x uint32)    { *v = append(*v, x) }
+func (v *word32Slice) Len() int           { return len(*v) }
+func (v *word32Slice) Index(i int) uint32 { return (*v)[i] }
 
 // Word32Slice returns the address of a []int32, []uint32, []float32, or []enum field in the struct.
 func structPointer_Word32Slice(p structPointer, f field) *word32Slice {
@@ -269,15 +257,9 @@ func structPointer_Word64Val(p structPointer, f field) word64Val {
 // word64Slice is like word32Slice but for 64-bit values.
 type word64Slice []uint64
 
-func (v *word64Slice) Append(x uint64) {
-	*v = append(*v, x)
-}
-func (v *word64Slice) Len() int {
-	return len(*v)
-}
-func (v *word64Slice) Index(i int) uint64 {
-	return (*v)[i]
-}
+func (v *word64Slice) Append(x uint64)    { *v = append(*v, x) }
+func (v *word64Slice) Len() int           { return len(*v) }
+func (v *word64Slice) Index(i int) uint64 { return (*v)[i] }
 
 func structPointer_Word64Slice(p structPointer, f field) *word64Slice {
 	return (*word64Slice)(unsafe.Pointer(uintptr(p) + uintptr(f)))

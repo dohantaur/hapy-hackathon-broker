@@ -27,7 +27,7 @@ type HandlersChain []HandlerFunc
 func (c HandlersChain) Last() HandlerFunc {
 	length := len(c)
 	if length > 0 {
-		return c[length - 1]
+		return c[length-1]
 	}
 	return nil
 }
@@ -44,20 +44,20 @@ type (
 	// Create an instance of Engine, by using New() or Default()
 	Engine struct {
 		RouterGroup
-		HTMLRender             render.HTMLRender
-		allNoRoute             HandlersChain
-		allNoMethod            HandlersChain
-		noRoute                HandlersChain
-		noMethod               HandlersChain
-		pool                   sync.Pool
-		trees                  methodTrees
+		HTMLRender  render.HTMLRender
+		allNoRoute  HandlersChain
+		allNoMethod HandlersChain
+		noRoute     HandlersChain
+		noMethod    HandlersChain
+		pool        sync.Pool
+		trees       methodTrees
 
 		// Enables automatic redirection if the current route can't be matched but a
 		// handler for the path with (without) the trailing slash exists.
 		// For example if /foo/ is requested but a route only exists for /foo, the
 		// client is redirected to /foo with http status code 301 for GET requests
 		// and 307 for all other request methods.
-		RedirectTrailingSlash  bool
+		RedirectTrailingSlash bool
 
 		// If enabled, the router tries to fix the current request path, if no
 		// handle is registered for it.
@@ -68,7 +68,7 @@ type (
 		// all other request methods.
 		// For example /FOO and /..//Foo could be redirected to /foo.
 		// RedirectTrailingSlash is independent of this option.
-		RedirectFixedPath      bool
+		RedirectFixedPath bool
 
 		// If enabled, the router checks if another method is allowed for the
 		// current route, if the current request can not be routed.
@@ -219,9 +219,7 @@ func iterate(path, method string, routes RoutesInfo, root *node) RoutesInfo {
 // It is a shortcut for http.ListenAndServe(addr, router)
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) Run(addr ...string) (err error) {
-	defer func() {
-		debugPrintError(err)
-	}()
+	defer func() { debugPrintError(err) }()
 
 	address := resolveAddress(addr)
 	debugPrint("Listening and serving HTTP on %s\n", address)
@@ -234,9 +232,7 @@ func (engine *Engine) Run(addr ...string) (err error) {
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunTLS(addr string, certFile string, keyFile string) (err error) {
 	debugPrint("Listening and serving HTTPS on %s\n", addr)
-	defer func() {
-		debugPrintError(err)
-	}()
+	defer func() { debugPrintError(err) }()
 
 	err = http.ListenAndServeTLS(addr, certFile, keyFile, engine)
 	return
@@ -247,9 +243,7 @@ func (engine *Engine) RunTLS(addr string, certFile string, keyFile string) (err 
 // Note: this method will block the calling goroutine indefinitely unless an error happens.
 func (engine *Engine) RunUnix(file string) (err error) {
 	debugPrint("Listening and serving HTTP on unix:/%s", file)
-	defer func() {
-		debugPrintError(err)
-	}()
+	defer func() { debugPrintError(err) }()
 
 	os.Remove(file)
 	listener, err := net.Listen("unix", file)
@@ -343,8 +337,8 @@ func redirectTrailingSlash(c *Context) {
 		code = 307
 	}
 
-	if len(path) > 1 && path[len(path) - 1] == '/' {
-		req.URL.Path = path[:len(path) - 1]
+	if len(path) > 1 && path[len(path)-1] == '/' {
+		req.URL.Path = path[:len(path)-1]
 	} else {
 		req.URL.Path = path + "/"
 	}

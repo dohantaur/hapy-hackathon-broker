@@ -7,14 +7,14 @@ package binding
 import "net/http"
 
 const (
-	MIMEJSON = "application/json"
-	MIMEHTML = "text/html"
-	MIMEXML = "application/xml"
-	MIMEXML2 = "text/xml"
-	MIMEPlain = "text/plain"
-	MIMEPOSTForm = "application/x-www-form-urlencoded"
+	MIMEJSON              = "application/json"
+	MIMEHTML              = "text/html"
+	MIMEXML               = "application/xml"
+	MIMEXML2              = "text/xml"
+	MIMEPlain             = "text/plain"
+	MIMEPOSTForm          = "application/x-www-form-urlencoded"
 	MIMEMultipartPOSTForm = "multipart/form-data"
-	MIMEPROTOBUF = "application/x-protobuf"
+	MIMEPROTOBUF          = "application/x-protobuf"
 )
 
 type Binding interface {
@@ -34,12 +34,12 @@ type StructValidator interface {
 var Validator StructValidator = &defaultValidator{}
 
 var (
-	JSON = jsonBinding{}
-	XML = xmlBinding{}
-	Form = formBinding{}
-	FormPost = formPostBinding{}
+	JSON          = jsonBinding{}
+	XML           = xmlBinding{}
+	Form          = formBinding{}
+	FormPost      = formPostBinding{}
 	FormMultipart = formMultipartBinding{}
-	ProtoBuf = protobufBinding{}
+	ProtoBuf      = protobufBinding{}
 )
 
 func Default(method, contentType string) Binding {

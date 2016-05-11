@@ -194,10 +194,10 @@ type decoder struct {
 }
 
 var (
-	mapItemType = reflect.TypeOf(MapItem{})
-	durationType = reflect.TypeOf(time.Duration(0))
+	mapItemType    = reflect.TypeOf(MapItem{})
+	durationType   = reflect.TypeOf(time.Duration(0))
 	defaultMapType = reflect.TypeOf(map[interface{}]interface{}{})
-	ifaceType = defaultMapType.Elem()
+	ifaceType      = defaultMapType.Elem()
 )
 
 func newDecoder() *decoder {
@@ -218,7 +218,7 @@ func (d *decoder) terror(n *node, tag string, out reflect.Value) {
 			value = " `" + value + "`"
 		}
 	}
-	d.terrors = append(d.terrors, fmt.Sprintf("line %d: cannot unmarshal %s%s into %s", n.line + 1, shortTag(tag), value, out.Type()))
+	d.terrors = append(d.terrors, fmt.Sprintf("line %d: cannot unmarshal %s%s into %s", n.line+1, shortTag(tag), value, out.Type()))
 }
 
 func (d *decoder) callUnmarshaler(n *node, u Unmarshaler) (good bool) {
@@ -514,7 +514,7 @@ func (d *decoder) mapping(n *node, out reflect.Value) (good bool) {
 	case reflect.Slice:
 		return d.mappingSlice(n, out)
 	case reflect.Map:
-	// okay
+		// okay
 	case reflect.Interface:
 		if d.mapType.Kind() == reflect.Map {
 			iface := out
@@ -547,7 +547,7 @@ func (d *decoder) mapping(n *node, out reflect.Value) (good bool) {
 	l := len(n.children)
 	for i := 0; i < l; i += 2 {
 		if isMerge(n.children[i]) {
-			d.merge(n.children[i + 1], out)
+			d.merge(n.children[i+1], out)
 			continue
 		}
 		k := reflect.New(kt).Elem()
@@ -560,7 +560,7 @@ func (d *decoder) mapping(n *node, out reflect.Value) (good bool) {
 				failf("invalid map key: %#v", k.Interface())
 			}
 			e := reflect.New(et).Elem()
-			if d.unmarshal(n.children[i + 1], e) {
+			if d.unmarshal(n.children[i+1], e) {
 				out.SetMapIndex(k, e)
 			}
 		}
@@ -583,14 +583,14 @@ func (d *decoder) mappingSlice(n *node, out reflect.Value) (good bool) {
 	var l = len(n.children)
 	for i := 0; i < l; i += 2 {
 		if isMerge(n.children[i]) {
-			d.merge(n.children[i + 1], out)
+			d.merge(n.children[i+1], out)
 			continue
 		}
 		item := MapItem{}
 		k := reflect.ValueOf(&item.Key).Elem()
 		if d.unmarshal(n.children[i], k) {
 			v := reflect.ValueOf(&item.Value).Elem()
-			if d.unmarshal(n.children[i + 1], v) {
+			if d.unmarshal(n.children[i+1], v) {
 				slice = append(slice, item)
 			}
 		}
@@ -619,7 +619,7 @@ func (d *decoder) mappingStruct(n *node, out reflect.Value) (good bool) {
 	for i := 0; i < l; i += 2 {
 		ni := n.children[i]
 		if isMerge(ni) {
-			d.merge(n.children[i + 1], out)
+			d.merge(n.children[i+1], out)
 			continue
 		}
 		if !d.unmarshal(ni, name) {
@@ -632,13 +632,13 @@ func (d *decoder) mappingStruct(n *node, out reflect.Value) (good bool) {
 			} else {
 				field = out.FieldByIndex(info.Inline)
 			}
-			d.unmarshal(n.children[i + 1], field)
+			d.unmarshal(n.children[i+1], field)
 		} else if sinfo.InlineMap != -1 {
 			if inlineMap.IsNil() {
 				inlineMap.Set(reflect.MakeMap(inlineMap.Type()))
 			}
 			value := reflect.New(elemType).Elem()
-			d.unmarshal(n.children[i + 1], value)
+			d.unmarshal(n.children[i+1], value)
 			inlineMap.SetMapIndex(name, value)
 		}
 	}

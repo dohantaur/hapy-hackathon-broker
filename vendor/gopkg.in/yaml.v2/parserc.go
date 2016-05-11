@@ -215,9 +215,9 @@ func yaml_parser_parse_document_start(parser *yaml_parser_t, event *yaml_event_t
 	}
 
 	if implicit && token.typ != yaml_VERSION_DIRECTIVE_TOKEN &&
-	token.typ != yaml_TAG_DIRECTIVE_TOKEN &&
-	token.typ != yaml_DOCUMENT_START_TOKEN &&
-	token.typ != yaml_STREAM_END_TOKEN {
+		token.typ != yaml_TAG_DIRECTIVE_TOKEN &&
+		token.typ != yaml_DOCUMENT_START_TOKEN &&
+		token.typ != yaml_STREAM_END_TOKEN {
 		// Parse an implicit document.
 		if !yaml_parser_process_directives(parser, nil, nil) {
 			return false
@@ -286,12 +286,12 @@ func yaml_parser_parse_document_content(parser *yaml_parser_t, event *yaml_event
 		return false
 	}
 	if token.typ == yaml_VERSION_DIRECTIVE_TOKEN ||
-	token.typ == yaml_TAG_DIRECTIVE_TOKEN ||
-	token.typ == yaml_DOCUMENT_START_TOKEN ||
-	token.typ == yaml_DOCUMENT_END_TOKEN ||
-	token.typ == yaml_STREAM_END_TOKEN {
-		parser.state = parser.states[len(parser.states) - 1]
-		parser.states = parser.states[:len(parser.states) - 1]
+		token.typ == yaml_TAG_DIRECTIVE_TOKEN ||
+		token.typ == yaml_DOCUMENT_START_TOKEN ||
+		token.typ == yaml_DOCUMENT_END_TOKEN ||
+		token.typ == yaml_STREAM_END_TOKEN {
+		parser.state = parser.states[len(parser.states)-1]
+		parser.states = parser.states[:len(parser.states)-1]
 		return yaml_parser_process_empty_scalar(parser, event,
 			token.start_mark)
 	}
@@ -366,8 +366,8 @@ func yaml_parser_parse_node(parser *yaml_parser_t, event *yaml_event_t, block, i
 	}
 
 	if token.typ == yaml_ALIAS_TOKEN {
-		parser.state = parser.states[len(parser.states) - 1]
-		parser.states = parser.states[:len(parser.states) - 1]
+		parser.state = parser.states[len(parser.states)-1]
+		parser.states = parser.states[:len(parser.states)-1]
 		*event = yaml_event_t{
 			typ:        yaml_ALIAS_EVENT,
 			start_mark: token.start_mark,
@@ -473,8 +473,8 @@ func yaml_parser_parse_node(parser *yaml_parser_t, event *yaml_event_t, block, i
 		} else if len(tag) == 0 {
 			quoted_implicit = true
 		}
-		parser.state = parser.states[len(parser.states) - 1]
-		parser.states = parser.states[:len(parser.states) - 1]
+		parser.state = parser.states[len(parser.states)-1]
+		parser.states = parser.states[:len(parser.states)-1]
 
 		*event = yaml_event_t{
 			typ:             yaml_SCALAR_EVENT,
@@ -548,8 +548,8 @@ func yaml_parser_parse_node(parser *yaml_parser_t, event *yaml_event_t, block, i
 		return true
 	}
 	if len(anchor) > 0 || len(tag) > 0 {
-		parser.state = parser.states[len(parser.states) - 1]
-		parser.states = parser.states[:len(parser.states) - 1]
+		parser.state = parser.states[len(parser.states)-1]
+		parser.states = parser.states[:len(parser.states)-1]
 
 		*event = yaml_event_t{
 			typ:             yaml_SCALAR_EVENT,
@@ -605,9 +605,9 @@ func yaml_parser_parse_block_sequence_entry(parser *yaml_parser_t, event *yaml_e
 		}
 	}
 	if token.typ == yaml_BLOCK_END_TOKEN {
-		parser.state = parser.states[len(parser.states) - 1]
-		parser.states = parser.states[:len(parser.states) - 1]
-		parser.marks = parser.marks[:len(parser.marks) - 1]
+		parser.state = parser.states[len(parser.states)-1]
+		parser.states = parser.states[:len(parser.states)-1]
+		parser.marks = parser.marks[:len(parser.marks)-1]
 
 		*event = yaml_event_t{
 			typ:        yaml_SEQUENCE_END_EVENT,
@@ -619,8 +619,8 @@ func yaml_parser_parse_block_sequence_entry(parser *yaml_parser_t, event *yaml_e
 		return true
 	}
 
-	context_mark := parser.marks[len(parser.marks) - 1]
-	parser.marks = parser.marks[:len(parser.marks) - 1]
+	context_mark := parser.marks[len(parser.marks)-1]
+	parser.marks = parser.marks[:len(parser.marks)-1]
 	return yaml_parser_set_parser_error_context(parser,
 		"while parsing a block collection", context_mark,
 		"did not find expected '-' indicator", token.start_mark)
@@ -643,17 +643,17 @@ func yaml_parser_parse_indentless_sequence_entry(parser *yaml_parser_t, event *y
 			return false
 		}
 		if token.typ != yaml_BLOCK_ENTRY_TOKEN &&
-		token.typ != yaml_KEY_TOKEN &&
-		token.typ != yaml_VALUE_TOKEN &&
-		token.typ != yaml_BLOCK_END_TOKEN {
+			token.typ != yaml_KEY_TOKEN &&
+			token.typ != yaml_VALUE_TOKEN &&
+			token.typ != yaml_BLOCK_END_TOKEN {
 			parser.states = append(parser.states, yaml_PARSE_INDENTLESS_SEQUENCE_ENTRY_STATE)
 			return yaml_parser_parse_node(parser, event, true, false)
 		}
 		parser.state = yaml_PARSE_INDENTLESS_SEQUENCE_ENTRY_STATE
 		return yaml_parser_process_empty_scalar(parser, event, mark)
 	}
-	parser.state = parser.states[len(parser.states) - 1]
-	parser.states = parser.states[:len(parser.states) - 1]
+	parser.state = parser.states[len(parser.states)-1]
+	parser.states = parser.states[:len(parser.states)-1]
 
 	*event = yaml_event_t{
 		typ:        yaml_SEQUENCE_END_EVENT,
@@ -693,8 +693,8 @@ func yaml_parser_parse_block_mapping_key(parser *yaml_parser_t, event *yaml_even
 			return false
 		}
 		if token.typ != yaml_KEY_TOKEN &&
-		token.typ != yaml_VALUE_TOKEN &&
-		token.typ != yaml_BLOCK_END_TOKEN {
+			token.typ != yaml_VALUE_TOKEN &&
+			token.typ != yaml_BLOCK_END_TOKEN {
 			parser.states = append(parser.states, yaml_PARSE_BLOCK_MAPPING_VALUE_STATE)
 			return yaml_parser_parse_node(parser, event, true, true)
 		} else {
@@ -702,9 +702,9 @@ func yaml_parser_parse_block_mapping_key(parser *yaml_parser_t, event *yaml_even
 			return yaml_parser_process_empty_scalar(parser, event, mark)
 		}
 	} else if token.typ == yaml_BLOCK_END_TOKEN {
-		parser.state = parser.states[len(parser.states) - 1]
-		parser.states = parser.states[:len(parser.states) - 1]
-		parser.marks = parser.marks[:len(parser.marks) - 1]
+		parser.state = parser.states[len(parser.states)-1]
+		parser.states = parser.states[:len(parser.states)-1]
+		parser.marks = parser.marks[:len(parser.marks)-1]
 		*event = yaml_event_t{
 			typ:        yaml_MAPPING_END_EVENT,
 			start_mark: token.start_mark,
@@ -714,8 +714,8 @@ func yaml_parser_parse_block_mapping_key(parser *yaml_parser_t, event *yaml_even
 		return true
 	}
 
-	context_mark := parser.marks[len(parser.marks) - 1]
-	parser.marks = parser.marks[:len(parser.marks) - 1]
+	context_mark := parser.marks[len(parser.marks)-1]
+	parser.marks = parser.marks[:len(parser.marks)-1]
 	return yaml_parser_set_parser_error_context(parser,
 		"while parsing a block mapping", context_mark,
 		"did not find expected key", token.start_mark)
@@ -744,8 +744,8 @@ func yaml_parser_parse_block_mapping_value(parser *yaml_parser_t, event *yaml_ev
 			return false
 		}
 		if token.typ != yaml_KEY_TOKEN &&
-		token.typ != yaml_VALUE_TOKEN &&
-		token.typ != yaml_BLOCK_END_TOKEN {
+			token.typ != yaml_VALUE_TOKEN &&
+			token.typ != yaml_BLOCK_END_TOKEN {
 			parser.states = append(parser.states, yaml_PARSE_BLOCK_MAPPING_KEY_STATE)
 			return yaml_parser_parse_node(parser, event, true, true)
 		}
@@ -787,8 +787,8 @@ func yaml_parser_parse_flow_sequence_entry(parser *yaml_parser_t, event *yaml_ev
 					return false
 				}
 			} else {
-				context_mark := parser.marks[len(parser.marks) - 1]
-				parser.marks = parser.marks[:len(parser.marks) - 1]
+				context_mark := parser.marks[len(parser.marks)-1]
+				parser.marks = parser.marks[:len(parser.marks)-1]
 				return yaml_parser_set_parser_error_context(parser,
 					"while parsing a flow sequence", context_mark,
 					"did not find expected ',' or ']'", token.start_mark)
@@ -812,9 +812,9 @@ func yaml_parser_parse_flow_sequence_entry(parser *yaml_parser_t, event *yaml_ev
 		}
 	}
 
-	parser.state = parser.states[len(parser.states) - 1]
-	parser.states = parser.states[:len(parser.states) - 1]
-	parser.marks = parser.marks[:len(parser.marks) - 1]
+	parser.state = parser.states[len(parser.states)-1]
+	parser.states = parser.states[:len(parser.states)-1]
+	parser.marks = parser.marks[:len(parser.marks)-1]
 
 	*event = yaml_event_t{
 		typ:        yaml_SEQUENCE_END_EVENT,
@@ -837,8 +837,8 @@ func yaml_parser_parse_flow_sequence_entry_mapping_key(parser *yaml_parser_t, ev
 		return false
 	}
 	if token.typ != yaml_VALUE_TOKEN &&
-	token.typ != yaml_FLOW_ENTRY_TOKEN &&
-	token.typ != yaml_FLOW_SEQUENCE_END_TOKEN {
+		token.typ != yaml_FLOW_ENTRY_TOKEN &&
+		token.typ != yaml_FLOW_SEQUENCE_END_TOKEN {
 		parser.states = append(parser.states, yaml_PARSE_FLOW_SEQUENCE_ENTRY_MAPPING_VALUE_STATE)
 		return yaml_parser_parse_node(parser, event, false, false)
 	}
@@ -923,8 +923,8 @@ func yaml_parser_parse_flow_mapping_key(parser *yaml_parser_t, event *yaml_event
 					return false
 				}
 			} else {
-				context_mark := parser.marks[len(parser.marks) - 1]
-				parser.marks = parser.marks[:len(parser.marks) - 1]
+				context_mark := parser.marks[len(parser.marks)-1]
+				parser.marks = parser.marks[:len(parser.marks)-1]
 				return yaml_parser_set_parser_error_context(parser,
 					"while parsing a flow mapping", context_mark,
 					"did not find expected ',' or '}'", token.start_mark)
@@ -938,8 +938,8 @@ func yaml_parser_parse_flow_mapping_key(parser *yaml_parser_t, event *yaml_event
 				return false
 			}
 			if token.typ != yaml_VALUE_TOKEN &&
-			token.typ != yaml_FLOW_ENTRY_TOKEN &&
-			token.typ != yaml_FLOW_MAPPING_END_TOKEN {
+				token.typ != yaml_FLOW_ENTRY_TOKEN &&
+				token.typ != yaml_FLOW_MAPPING_END_TOKEN {
 				parser.states = append(parser.states, yaml_PARSE_FLOW_MAPPING_VALUE_STATE)
 				return yaml_parser_parse_node(parser, event, false, false)
 			} else {
@@ -952,9 +952,9 @@ func yaml_parser_parse_flow_mapping_key(parser *yaml_parser_t, event *yaml_event
 		}
 	}
 
-	parser.state = parser.states[len(parser.states) - 1]
-	parser.states = parser.states[:len(parser.states) - 1]
-	parser.marks = parser.marks[:len(parser.marks) - 1]
+	parser.state = parser.states[len(parser.states)-1]
+	parser.states = parser.states[:len(parser.states)-1]
+	parser.marks = parser.marks[:len(parser.marks)-1]
 	*event = yaml_event_t{
 		typ:        yaml_MAPPING_END_EVENT,
 		start_mark: token.start_mark,
@@ -1012,8 +1012,8 @@ var default_tag_directives = []yaml_tag_directive_t{
 
 // Parse directives.
 func yaml_parser_process_directives(parser *yaml_parser_t,
-version_directive_ref **yaml_version_directive_t,
-tag_directives_ref *[]yaml_tag_directive_t) bool {
+	version_directive_ref **yaml_version_directive_t,
+	tag_directives_ref *[]yaml_tag_directive_t) bool {
 
 	var version_directive *yaml_version_directive_t
 	var tag_directives []yaml_tag_directive_t

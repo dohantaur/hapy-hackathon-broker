@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	noWritten = -1
+	noWritten     = -1
 	defaultStatus = 200
 )
 

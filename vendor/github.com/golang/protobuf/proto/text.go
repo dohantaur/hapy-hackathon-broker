@@ -48,18 +48,18 @@ import (
 )
 
 var (
-	newline = []byte("\n")
-	spaces = []byte("                                        ")
-	gtNewline = []byte(">\n")
+	newline         = []byte("\n")
+	spaces          = []byte("                                        ")
+	gtNewline       = []byte(">\n")
 	endBraceNewline = []byte("}\n")
-	backslashN = []byte{'\\', 'n'}
-	backslashR = []byte{'\\', 'r'}
-	backslashT = []byte{'\\', 't'}
-	backslashDQ = []byte{'\\', '"'}
-	backslashBS = []byte{'\\', '\\'}
-	posInf = []byte("inf")
-	negInf = []byte("-inf")
-	nan = []byte("nan")
+	backslashN      = []byte{'\\', 'n'}
+	backslashR      = []byte{'\\', 'r'}
+	backslashT      = []byte{'\\', 't'}
+	backslashDQ     = []byte{'\\', '"'}
+	backslashBS     = []byte{'\\', '\\'}
+	posInf          = []byte("inf")
+	negInf          = []byte("-inf")
+	nan             = []byte("nan")
 )
 
 type writer interface {
@@ -100,7 +100,7 @@ func (w *textWriter) Write(p []byte) (n int, err error) {
 		return n, err
 	}
 
-	frags := bytes.SplitN(p, newline, newlines + 1)
+	frags := bytes.SplitN(p, newline, newlines+1)
 	if w.compact {
 		for i, frag := range frags {
 			if i > 0 {
@@ -127,14 +127,14 @@ func (w *textWriter) Write(p []byte) (n int, err error) {
 		if err != nil {
 			return n, err
 		}
-		if i + 1 < len(frags) {
+		if i+1 < len(frags) {
 			if err := w.w.WriteByte('\n'); err != nil {
 				return n, err
 			}
 			n++
 		}
 	}
-	w.complete = len(frags[len(frags) - 1]) == 0
+	w.complete = len(frags[len(frags)-1]) == 0
 	return n, nil
 }
 
@@ -150,9 +150,7 @@ func (w *textWriter) WriteByte(c byte) error {
 	return err
 }
 
-func (w *textWriter) indent() {
-	w.ind++
-}
+func (w *textWriter) indent() { w.ind++ }
 
 func (w *textWriter) unindent() {
 	if w.ind == 0 {
@@ -225,7 +223,7 @@ func (tm *TextMarshaler) writeProto3Any(w *textWriter, sv reflect.Value) (bool, 
 	}
 
 	parts := strings.Split(turl.String(), "/")
-	mt := MessageType(parts[len(parts) - 1])
+	mt := MessageType(parts[len(parts)-1])
 	if mt == nil {
 		return false, nil
 	}
@@ -618,7 +616,7 @@ func writeUnknownStruct(w *textWriter, data []byte) (err error) {
 			_, err := fmt.Fprintf(w, "/* %v */\n", err)
 			return err
 		}
-		wire, tag := x & 7, x >> 3
+		wire, tag := x&7, x>>3
 		if wire == WireEndGroup {
 			w.unindent()
 			if _, err := w.Write(endBraceNewline); err != nil {
@@ -683,15 +681,9 @@ func writeUnknownInt(w *textWriter, x uint64, err error) error {
 
 type int32Slice []int32
 
-func (s int32Slice) Len() int {
-	return len(s)
-}
-func (s int32Slice) Less(i, j int) bool {
-	return s[i] < s[j]
-}
-func (s int32Slice) Swap(i, j int) {
-	s[i], s[j] = s[j], s[i]
-}
+func (s int32Slice) Len() int           { return len(s) }
+func (s int32Slice) Less(i, j int) bool { return s[i] < s[j] }
+func (s int32Slice) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
 
 // writeExtensions writes all the extensions in pv.
 // pv is assumed to be a pointer to a protocol message struct that is extendable.
@@ -845,21 +837,13 @@ var (
 
 // MarshalText writes a given protocol buffer in text format.
 // The only errors returned are from w.
-func MarshalText(w io.Writer, pb Message) error {
-	return defaultTextMarshaler.Marshal(w, pb)
-}
+func MarshalText(w io.Writer, pb Message) error { return defaultTextMarshaler.Marshal(w, pb) }
 
 // MarshalTextString is the same as MarshalText, but returns the string directly.
-func MarshalTextString(pb Message) string {
-	return defaultTextMarshaler.Text(pb)
-}
+func MarshalTextString(pb Message) string { return defaultTextMarshaler.Text(pb) }
 
 // CompactText writes a given protocol buffer in compact text format (one line).
-func CompactText(w io.Writer, pb Message) error {
-	return compactTextMarshaler.Marshal(w, pb)
-}
+func CompactText(w io.Writer, pb Message) error { return compactTextMarshaler.Marshal(w, pb) }
 
 // CompactTextString is the same as CompactText, but returns the string directly.
-func CompactTextString(pb Message) string {
-	return compactTextMarshaler.Text(pb)
-}
+func CompactTextString(pb Message) string { return compactTextMarshaler.Text(pb) }

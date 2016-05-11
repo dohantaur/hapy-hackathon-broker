@@ -520,12 +520,12 @@ func read(parser *yaml_parser_t, s []byte) []byte {
 	if len(s) == 0 {
 		s = make([]byte, 0, 32)
 	}
-	if w == 1 && len(s) + w <= cap(s) {
-		s = s[:len(s) + 1]
-		s[len(s) - 1] = parser.buffer[parser.buffer_pos]
+	if w == 1 && len(s)+w <= cap(s) {
+		s = s[:len(s)+1]
+		s[len(s)-1] = parser.buffer[parser.buffer_pos]
 		parser.buffer_pos++
 	} else {
-		s = append(s, parser.buffer[parser.buffer_pos:parser.buffer_pos + w]...)
+		s = append(s, parser.buffer[parser.buffer_pos:parser.buffer_pos+w]...)
 		parser.buffer_pos += w
 	}
 	parser.mark.index++
@@ -539,7 +539,7 @@ func read_line(parser *yaml_parser_t, s []byte) []byte {
 	buf := parser.buffer
 	pos := parser.buffer_pos
 	switch {
-	case buf[pos] == '\r' && buf[pos + 1] == '\n':
+	case buf[pos] == '\r' && buf[pos+1] == '\n':
 		// CR LF . LF
 		s = append(s, '\n')
 		parser.buffer_pos += 2
@@ -549,13 +549,13 @@ func read_line(parser *yaml_parser_t, s []byte) []byte {
 		// CR|LF . LF
 		s = append(s, '\n')
 		parser.buffer_pos += 1
-	case buf[pos] == '\xC2' && buf[pos + 1] == '\x85':
+	case buf[pos] == '\xC2' && buf[pos+1] == '\x85':
 		// NEL . LF
 		s = append(s, '\n')
 		parser.buffer_pos += 2
-	case buf[pos] == '\xE2' && buf[pos + 1] == '\x80' && (buf[pos + 2] == '\xA8' || buf[pos + 2] == '\xA9'):
+	case buf[pos] == '\xE2' && buf[pos+1] == '\x80' && (buf[pos+2] == '\xA8' || buf[pos+2] == '\xA9'):
 		// LS|PS . LS|PS
-		s = append(s, buf[parser.buffer_pos:pos + 3]...)
+		s = append(s, buf[parser.buffer_pos:pos+3]...)
 		parser.buffer_pos += 3
 	default:
 		return s
@@ -618,9 +618,7 @@ func trace(args ...interface{}) func() {
 	pargs := append([]interface{}{"+++"}, args...)
 	fmt.Println(pargs...)
 	pargs = append([]interface{}{"---"}, args...)
-	return func() {
-		fmt.Println(pargs...)
-	}
+	return func() { fmt.Println(pargs...) }
 }
 
 // Ensure that the tokens queue contains at least one token which can be
@@ -710,12 +708,12 @@ func yaml_parser_fetch_next_token(parser *yaml_parser_t) bool {
 	pos := parser.buffer_pos
 
 	// Is it the document start indicator?
-	if parser.mark.column == 0 && buf[pos] == '-' && buf[pos + 1] == '-' && buf[pos + 2] == '-' && is_blankz(buf, pos + 3) {
+	if parser.mark.column == 0 && buf[pos] == '-' && buf[pos+1] == '-' && buf[pos+2] == '-' && is_blankz(buf, pos+3) {
 		return yaml_parser_fetch_document_indicator(parser, yaml_DOCUMENT_START_TOKEN)
 	}
 
 	// Is it the document end indicator?
-	if parser.mark.column == 0 && buf[pos] == '.' && buf[pos + 1] == '.' && buf[pos + 2] == '.' && is_blankz(buf, pos + 3) {
+	if parser.mark.column == 0 && buf[pos] == '.' && buf[pos+1] == '.' && buf[pos+2] == '.' && is_blankz(buf, pos+3) {
 		return yaml_parser_fetch_document_indicator(parser, yaml_DOCUMENT_END_TOKEN)
 	}
 
@@ -747,17 +745,17 @@ func yaml_parser_fetch_next_token(parser *yaml_parser_t) bool {
 	}
 
 	// Is it the block entry indicator?
-	if parser.buffer[parser.buffer_pos] == '-' && is_blankz(parser.buffer, parser.buffer_pos + 1) {
+	if parser.buffer[parser.buffer_pos] == '-' && is_blankz(parser.buffer, parser.buffer_pos+1) {
 		return yaml_parser_fetch_block_entry(parser)
 	}
 
 	// Is it the key indicator?
-	if parser.buffer[parser.buffer_pos] == '?' && (parser.flow_level > 0 || is_blankz(parser.buffer, parser.buffer_pos + 1)) {
+	if parser.buffer[parser.buffer_pos] == '?' && (parser.flow_level > 0 || is_blankz(parser.buffer, parser.buffer_pos+1)) {
 		return yaml_parser_fetch_key(parser)
 	}
 
 	// Is it the value indicator?
-	if parser.buffer[parser.buffer_pos] == ':' && (parser.flow_level > 0 || is_blankz(parser.buffer, parser.buffer_pos + 1)) {
+	if parser.buffer[parser.buffer_pos] == ':' && (parser.flow_level > 0 || is_blankz(parser.buffer, parser.buffer_pos+1)) {
 		return yaml_parser_fetch_value(parser)
 	}
 
@@ -817,19 +815,19 @@ func yaml_parser_fetch_next_token(parser *yaml_parser_t) bool {
 	//case '-', '?', ':', ',', '?', '-', ',', ':', ']', '[', '}', '{', '&', '#', '!', '*', '>', '|', '"', '\'', '@', '%', '-', '`':
 	//}
 	if !(is_blankz(parser.buffer, parser.buffer_pos) || parser.buffer[parser.buffer_pos] == '-' ||
-	parser.buffer[parser.buffer_pos] == '?' || parser.buffer[parser.buffer_pos] == ':' ||
-	parser.buffer[parser.buffer_pos] == ',' || parser.buffer[parser.buffer_pos] == '[' ||
-	parser.buffer[parser.buffer_pos] == ']' || parser.buffer[parser.buffer_pos] == '{' ||
-	parser.buffer[parser.buffer_pos] == '}' || parser.buffer[parser.buffer_pos] == '#' ||
-	parser.buffer[parser.buffer_pos] == '&' || parser.buffer[parser.buffer_pos] == '*' ||
-	parser.buffer[parser.buffer_pos] == '!' || parser.buffer[parser.buffer_pos] == '|' ||
-	parser.buffer[parser.buffer_pos] == '>' || parser.buffer[parser.buffer_pos] == '\'' ||
-	parser.buffer[parser.buffer_pos] == '"' || parser.buffer[parser.buffer_pos] == '%' ||
-	parser.buffer[parser.buffer_pos] == '@' || parser.buffer[parser.buffer_pos] == '`') ||
-	(parser.buffer[parser.buffer_pos] == '-' && !is_blank(parser.buffer, parser.buffer_pos + 1)) ||
-	(parser.flow_level == 0 &&
-	(parser.buffer[parser.buffer_pos] == '?' || parser.buffer[parser.buffer_pos] == ':') &&
-	!is_blankz(parser.buffer, parser.buffer_pos + 1)) {
+		parser.buffer[parser.buffer_pos] == '?' || parser.buffer[parser.buffer_pos] == ':' ||
+		parser.buffer[parser.buffer_pos] == ',' || parser.buffer[parser.buffer_pos] == '[' ||
+		parser.buffer[parser.buffer_pos] == ']' || parser.buffer[parser.buffer_pos] == '{' ||
+		parser.buffer[parser.buffer_pos] == '}' || parser.buffer[parser.buffer_pos] == '#' ||
+		parser.buffer[parser.buffer_pos] == '&' || parser.buffer[parser.buffer_pos] == '*' ||
+		parser.buffer[parser.buffer_pos] == '!' || parser.buffer[parser.buffer_pos] == '|' ||
+		parser.buffer[parser.buffer_pos] == '>' || parser.buffer[parser.buffer_pos] == '\'' ||
+		parser.buffer[parser.buffer_pos] == '"' || parser.buffer[parser.buffer_pos] == '%' ||
+		parser.buffer[parser.buffer_pos] == '@' || parser.buffer[parser.buffer_pos] == '`') ||
+		(parser.buffer[parser.buffer_pos] == '-' && !is_blank(parser.buffer, parser.buffer_pos+1)) ||
+		(parser.flow_level == 0 &&
+			(parser.buffer[parser.buffer_pos] == '?' || parser.buffer[parser.buffer_pos] == ':') &&
+			!is_blankz(parser.buffer, parser.buffer_pos+1)) {
 		return yaml_parser_fetch_plain_scalar(parser)
 	}
 
@@ -850,7 +848,7 @@ func yaml_parser_stale_simple_keys(parser *yaml_parser_t) bool {
 		//
 		//  - is limited to a single line,
 		//  - is shorter than 1024 characters.
-		if simple_key.possible && (simple_key.mark.line < parser.mark.line || simple_key.mark.index + 1024 < parser.mark.index) {
+		if simple_key.possible && (simple_key.mark.line < parser.mark.line || simple_key.mark.index+1024 < parser.mark.index) {
 
 			// Check if the potential simple key to be removed is required.
 			if simple_key.required {
@@ -893,7 +891,7 @@ func yaml_parser_save_simple_key(parser *yaml_parser_t) bool {
 		if !yaml_parser_remove_simple_key(parser) {
 			return false
 		}
-		parser.simple_keys[len(parser.simple_keys) - 1] = simple_key
+		parser.simple_keys[len(parser.simple_keys)-1] = simple_key
 	}
 	return true
 }
@@ -928,7 +926,7 @@ func yaml_parser_increase_flow_level(parser *yaml_parser_t) bool {
 func yaml_parser_decrease_flow_level(parser *yaml_parser_t) bool {
 	if parser.flow_level > 0 {
 		parser.flow_level--
-		parser.simple_keys = parser.simple_keys[:len(parser.simple_keys) - 1]
+		parser.simple_keys = parser.simple_keys[:len(parser.simple_keys)-1]
 	}
 	return true
 }
@@ -982,8 +980,8 @@ func yaml_parser_unroll_indent(parser *yaml_parser_t, column int) bool {
 		yaml_insert_token(parser, -1, &token)
 
 		// Pop the indentation level.
-		parser.indent = parser.indents[len(parser.indents) - 1]
-		parser.indents = parser.indents[:len(parser.indents) - 1]
+		parser.indent = parser.indents[len(parser.indents)-1]
+		parser.indents = parser.indents[:len(parser.indents)-1]
 	}
 	return true
 }
@@ -1275,7 +1273,7 @@ func yaml_parser_fetch_key(parser *yaml_parser_t) bool {
 // Produce the VALUE token.
 func yaml_parser_fetch_value(parser *yaml_parser_t) bool {
 
-	simple_key := &parser.simple_keys[len(parser.simple_keys) - 1]
+	simple_key := &parser.simple_keys[len(parser.simple_keys)-1]
 
 	// Have we found a simple key?
 	if simple_key.possible {
@@ -1285,7 +1283,7 @@ func yaml_parser_fetch_value(parser *yaml_parser_t) bool {
 			start_mark: simple_key.mark,
 			end_mark:   simple_key.mark,
 		}
-		yaml_insert_token(parser, simple_key.token_number - parser.tokens_parsed, &token)
+		yaml_insert_token(parser, simple_key.token_number-parser.tokens_parsed, &token)
 
 		// In the block context, we may need to add the BLOCK-MAPPING-START token.
 		if !yaml_parser_roll_indent(parser, simple_key.mark.column,
@@ -1690,7 +1688,7 @@ func yaml_parser_scan_version_directive_number(parser *yaml_parser_t, start_mark
 			return yaml_parser_set_scanner_error(parser, "while scanning a %YAML directive",
 				start_mark, "found extremely long version number")
 		}
-		value = value * 10 + int8(as_digit(parser.buffer, parser.buffer_pos))
+		value = value*10 + int8(as_digit(parser.buffer, parser.buffer_pos))
 		skip(parser)
 		if parser.unread < 1 && !yaml_parser_update_buffer(parser, 1) {
 			return false
@@ -1799,11 +1797,11 @@ func yaml_parser_scan_anchor(parser *yaml_parser_t, token *yaml_token_t, typ yam
 	 */
 
 	if len(s) == 0 ||
-	!(is_blankz(parser.buffer, parser.buffer_pos) || parser.buffer[parser.buffer_pos] == '?' ||
-	parser.buffer[parser.buffer_pos] == ':' || parser.buffer[parser.buffer_pos] == ',' ||
-	parser.buffer[parser.buffer_pos] == ']' || parser.buffer[parser.buffer_pos] == '}' ||
-	parser.buffer[parser.buffer_pos] == '%' || parser.buffer[parser.buffer_pos] == '@' ||
-	parser.buffer[parser.buffer_pos] == '`') {
+		!(is_blankz(parser.buffer, parser.buffer_pos) || parser.buffer[parser.buffer_pos] == '?' ||
+			parser.buffer[parser.buffer_pos] == ':' || parser.buffer[parser.buffer_pos] == ',' ||
+			parser.buffer[parser.buffer_pos] == ']' || parser.buffer[parser.buffer_pos] == '}' ||
+			parser.buffer[parser.buffer_pos] == '%' || parser.buffer[parser.buffer_pos] == '@' ||
+			parser.buffer[parser.buffer_pos] == '`') {
 		context := "while scanning an alias"
 		if typ == yaml_ANCHOR_TOKEN {
 			context = "while scanning an anchor"
@@ -1838,7 +1836,7 @@ func yaml_parser_scan_tag(parser *yaml_parser_t, token *yaml_token_t) bool {
 		return false
 	}
 
-	if parser.buffer[parser.buffer_pos + 1] == '<' {
+	if parser.buffer[parser.buffer_pos+1] == '<' {
 		// Keep the handle as ''
 
 		// Eat '!<'
@@ -1867,7 +1865,7 @@ func yaml_parser_scan_tag(parser *yaml_parser_t, token *yaml_token_t) bool {
 		}
 
 		// Check if it is, indeed, handle.
-		if handle[0] == '!' && len(handle) > 1 && handle[len(handle) - 1] == '!' {
+		if handle[0] == '!' && len(handle) > 1 && handle[len(handle)-1] == '!' {
 			// Scan the suffix now.
 			if !yaml_parser_scan_tag_uri(parser, false, nil, start_mark, &suffix) {
 				return false
@@ -1981,16 +1979,16 @@ func yaml_parser_scan_tag_uri(parser *yaml_parser_t, directive bool, head []byte
 	//      '%'.
 	// [Go] Convert this into more reasonable logic.
 	for is_alpha(parser.buffer, parser.buffer_pos) || parser.buffer[parser.buffer_pos] == ';' ||
-	parser.buffer[parser.buffer_pos] == '/' || parser.buffer[parser.buffer_pos] == '?' ||
-	parser.buffer[parser.buffer_pos] == ':' || parser.buffer[parser.buffer_pos] == '@' ||
-	parser.buffer[parser.buffer_pos] == '&' || parser.buffer[parser.buffer_pos] == '=' ||
-	parser.buffer[parser.buffer_pos] == '+' || parser.buffer[parser.buffer_pos] == '$' ||
-	parser.buffer[parser.buffer_pos] == ',' || parser.buffer[parser.buffer_pos] == '.' ||
-	parser.buffer[parser.buffer_pos] == '!' || parser.buffer[parser.buffer_pos] == '~' ||
-	parser.buffer[parser.buffer_pos] == '*' || parser.buffer[parser.buffer_pos] == '\'' ||
-	parser.buffer[parser.buffer_pos] == '(' || parser.buffer[parser.buffer_pos] == ')' ||
-	parser.buffer[parser.buffer_pos] == '[' || parser.buffer[parser.buffer_pos] == ']' ||
-	parser.buffer[parser.buffer_pos] == '%' {
+		parser.buffer[parser.buffer_pos] == '/' || parser.buffer[parser.buffer_pos] == '?' ||
+		parser.buffer[parser.buffer_pos] == ':' || parser.buffer[parser.buffer_pos] == '@' ||
+		parser.buffer[parser.buffer_pos] == '&' || parser.buffer[parser.buffer_pos] == '=' ||
+		parser.buffer[parser.buffer_pos] == '+' || parser.buffer[parser.buffer_pos] == '$' ||
+		parser.buffer[parser.buffer_pos] == ',' || parser.buffer[parser.buffer_pos] == '.' ||
+		parser.buffer[parser.buffer_pos] == '!' || parser.buffer[parser.buffer_pos] == '~' ||
+		parser.buffer[parser.buffer_pos] == '*' || parser.buffer[parser.buffer_pos] == '\'' ||
+		parser.buffer[parser.buffer_pos] == '(' || parser.buffer[parser.buffer_pos] == ')' ||
+		parser.buffer[parser.buffer_pos] == '[' || parser.buffer[parser.buffer_pos] == ']' ||
+		parser.buffer[parser.buffer_pos] == '%' {
 		// Check if it is a URI-escape sequence.
 		if parser.buffer[parser.buffer_pos] == '%' {
 			if !yaml_parser_scan_uri_escapes(parser, directive, start_mark, &s) {
@@ -2026,14 +2024,14 @@ func yaml_parser_scan_uri_escapes(parser *yaml_parser_t, directive bool, start_m
 		}
 
 		if !(parser.buffer[parser.buffer_pos] == '%' &&
-		is_hex(parser.buffer, parser.buffer_pos + 1) &&
-		is_hex(parser.buffer, parser.buffer_pos + 2)) {
+			is_hex(parser.buffer, parser.buffer_pos+1) &&
+			is_hex(parser.buffer, parser.buffer_pos+2)) {
 			return yaml_parser_set_scanner_tag_error(parser, directive,
 				start_mark, "did not find URI escaped octet")
 		}
 
 		// Get the octet.
-		octet := byte((as_hex(parser.buffer, parser.buffer_pos + 1) << 4) + as_hex(parser.buffer, parser.buffer_pos + 2))
+		octet := byte((as_hex(parser.buffer, parser.buffer_pos+1) << 4) + as_hex(parser.buffer, parser.buffer_pos+2))
 
 		// If it is the leading octet, determine the length of the UTF-8 sequence.
 		if w == 1024 {
@@ -2044,7 +2042,7 @@ func yaml_parser_scan_uri_escapes(parser *yaml_parser_t, directive bool, start_m
 			}
 		} else {
 			// Check if the trailing octet is correct.
-			if octet & 0xC0 != 0x80 {
+			if octet&0xC0 != 0x80 {
 				return yaml_parser_set_scanner_tag_error(parser, directive,
 					start_mark, "found an incorrect trailing UTF-8 octet")
 			}
@@ -2292,7 +2290,7 @@ func yaml_parser_scan_block_scalar_breaks(parser *yaml_parser_t, indent *int, br
 	// Determine the indentation level if needed.
 	if *indent == 0 {
 		*indent = max_indent
-		if *indent < parser.indent + 1 {
+		if *indent < parser.indent+1 {
 			*indent = parser.indent + 1
 		}
 		if *indent < 1 {
@@ -2317,13 +2315,13 @@ func yaml_parser_scan_flow_scalar(parser *yaml_parser_t, token *yaml_token_t, si
 		}
 
 		if parser.mark.column == 0 &&
-		((parser.buffer[parser.buffer_pos + 0] == '-' &&
-		parser.buffer[parser.buffer_pos + 1] == '-' &&
-		parser.buffer[parser.buffer_pos + 2] == '-') ||
-		(parser.buffer[parser.buffer_pos + 0] == '.' &&
-		parser.buffer[parser.buffer_pos + 1] == '.' &&
-		parser.buffer[parser.buffer_pos + 2] == '.')) &&
-		is_blankz(parser.buffer, parser.buffer_pos + 3) {
+			((parser.buffer[parser.buffer_pos+0] == '-' &&
+				parser.buffer[parser.buffer_pos+1] == '-' &&
+				parser.buffer[parser.buffer_pos+2] == '-') ||
+				(parser.buffer[parser.buffer_pos+0] == '.' &&
+					parser.buffer[parser.buffer_pos+1] == '.' &&
+					parser.buffer[parser.buffer_pos+2] == '.')) &&
+			is_blankz(parser.buffer, parser.buffer_pos+3) {
 			yaml_parser_set_scanner_error(parser, "while scanning a quoted scalar",
 				start_mark, "found unexpected document indicator")
 			return false
@@ -2339,7 +2337,7 @@ func yaml_parser_scan_flow_scalar(parser *yaml_parser_t, token *yaml_token_t, si
 		// Consume non-blank characters.
 		leading_blanks := false
 		for !is_blankz(parser.buffer, parser.buffer_pos) {
-			if single && parser.buffer[parser.buffer_pos] == '\'' && parser.buffer[parser.buffer_pos + 1] == '\'' {
+			if single && parser.buffer[parser.buffer_pos] == '\'' && parser.buffer[parser.buffer_pos+1] == '\'' {
 				// Is is an escaped single quote.
 				s = append(s, '\'')
 				skip(parser)
@@ -2352,7 +2350,7 @@ func yaml_parser_scan_flow_scalar(parser *yaml_parser_t, token *yaml_token_t, si
 				// It is a right double quote.
 				break
 
-			} else if !single && parser.buffer[parser.buffer_pos] == '\\' && is_break(parser.buffer, parser.buffer_pos + 1) {
+			} else if !single && parser.buffer[parser.buffer_pos] == '\\' && is_break(parser.buffer, parser.buffer_pos+1) {
 				// It is an escaped line break.
 				if parser.unread < 3 && !yaml_parser_update_buffer(parser, 3) {
 					return false
@@ -2367,7 +2365,7 @@ func yaml_parser_scan_flow_scalar(parser *yaml_parser_t, token *yaml_token_t, si
 				code_length := 0
 
 				// Check the escape character.
-				switch parser.buffer[parser.buffer_pos + 1] {
+				switch parser.buffer[parser.buffer_pos+1] {
 				case '0':
 					s = append(s, 0)
 				case 'a':
@@ -2432,12 +2430,12 @@ func yaml_parser_scan_flow_scalar(parser *yaml_parser_t, token *yaml_token_t, si
 						return false
 					}
 					for k := 0; k < code_length; k++ {
-						if !is_hex(parser.buffer, parser.buffer_pos + k) {
+						if !is_hex(parser.buffer, parser.buffer_pos+k) {
 							yaml_parser_set_scanner_error(parser, "while parsing a quoted scalar",
 								start_mark, "did not find expected hexdecimal number")
 							return false
 						}
-						value = (value << 4) + as_hex(parser.buffer, parser.buffer_pos + k)
+						value = (value << 4) + as_hex(parser.buffer, parser.buffer_pos+k)
 					}
 
 					// Check the value and write the character.
@@ -2449,17 +2447,17 @@ func yaml_parser_scan_flow_scalar(parser *yaml_parser_t, token *yaml_token_t, si
 					if value <= 0x7F {
 						s = append(s, byte(value))
 					} else if value <= 0x7FF {
-						s = append(s, byte(0xC0 + (value >> 6)))
-						s = append(s, byte(0x80 + (value & 0x3F)))
+						s = append(s, byte(0xC0+(value>>6)))
+						s = append(s, byte(0x80+(value&0x3F)))
 					} else if value <= 0xFFFF {
-						s = append(s, byte(0xE0 + (value >> 12)))
-						s = append(s, byte(0x80 + ((value >> 6) & 0x3F)))
-						s = append(s, byte(0x80 + (value & 0x3F)))
+						s = append(s, byte(0xE0+(value>>12)))
+						s = append(s, byte(0x80+((value>>6)&0x3F)))
+						s = append(s, byte(0x80+(value&0x3F)))
 					} else {
-						s = append(s, byte(0xF0 + (value >> 18)))
-						s = append(s, byte(0x80 + ((value >> 12) & 0x3F)))
-						s = append(s, byte(0x80 + ((value >> 6) & 0x3F)))
-						s = append(s, byte(0x80 + (value & 0x3F)))
+						s = append(s, byte(0xF0+(value>>18)))
+						s = append(s, byte(0x80+((value>>12)&0x3F)))
+						s = append(s, byte(0x80+((value>>6)&0x3F)))
+						s = append(s, byte(0x80+(value&0x3F)))
 					}
 
 					// Advance the pointer.
@@ -2575,13 +2573,13 @@ func yaml_parser_scan_plain_scalar(parser *yaml_parser_t, token *yaml_token_t) b
 			return false
 		}
 		if parser.mark.column == 0 &&
-		((parser.buffer[parser.buffer_pos + 0] == '-' &&
-		parser.buffer[parser.buffer_pos + 1] == '-' &&
-		parser.buffer[parser.buffer_pos + 2] == '-') ||
-		(parser.buffer[parser.buffer_pos + 0] == '.' &&
-		parser.buffer[parser.buffer_pos + 1] == '.' &&
-		parser.buffer[parser.buffer_pos + 2] == '.')) &&
-		is_blankz(parser.buffer, parser.buffer_pos + 3) {
+			((parser.buffer[parser.buffer_pos+0] == '-' &&
+				parser.buffer[parser.buffer_pos+1] == '-' &&
+				parser.buffer[parser.buffer_pos+2] == '-') ||
+				(parser.buffer[parser.buffer_pos+0] == '.' &&
+					parser.buffer[parser.buffer_pos+1] == '.' &&
+					parser.buffer[parser.buffer_pos+2] == '.')) &&
+			is_blankz(parser.buffer, parser.buffer_pos+3) {
 			break
 		}
 
@@ -2595,20 +2593,20 @@ func yaml_parser_scan_plain_scalar(parser *yaml_parser_t, token *yaml_token_t) b
 
 			// Check for 'x:x' in the flow context. TODO: Fix the test "spec-08-13".
 			if parser.flow_level > 0 &&
-			parser.buffer[parser.buffer_pos] == ':' &&
-			!is_blankz(parser.buffer, parser.buffer_pos + 1) {
+				parser.buffer[parser.buffer_pos] == ':' &&
+				!is_blankz(parser.buffer, parser.buffer_pos+1) {
 				yaml_parser_set_scanner_error(parser, "while scanning a plain scalar",
 					start_mark, "found unexpected ':'")
 				return false
 			}
 
 			// Check for indicators that may end a plain scalar.
-			if (parser.buffer[parser.buffer_pos] == ':' && is_blankz(parser.buffer, parser.buffer_pos + 1)) ||
-			(parser.flow_level > 0 &&
-			(parser.buffer[parser.buffer_pos] == ',' || parser.buffer[parser.buffer_pos] == ':' ||
-			parser.buffer[parser.buffer_pos] == '?' || parser.buffer[parser.buffer_pos] == '[' ||
-			parser.buffer[parser.buffer_pos] == ']' || parser.buffer[parser.buffer_pos] == '{' ||
-			parser.buffer[parser.buffer_pos] == '}')) {
+			if (parser.buffer[parser.buffer_pos] == ':' && is_blankz(parser.buffer, parser.buffer_pos+1)) ||
+				(parser.flow_level > 0 &&
+					(parser.buffer[parser.buffer_pos] == ',' || parser.buffer[parser.buffer_pos] == ':' ||
+						parser.buffer[parser.buffer_pos] == '?' || parser.buffer[parser.buffer_pos] == '[' ||
+						parser.buffer[parser.buffer_pos] == ']' || parser.buffer[parser.buffer_pos] == '{' ||
+						parser.buffer[parser.buffer_pos] == '}')) {
 				break
 			}
 

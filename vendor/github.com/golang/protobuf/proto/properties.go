@@ -50,12 +50,12 @@ const debug bool = false
 
 // Constants that identify the encoding of a value on the wire.
 const (
-	WireVarint = 0
-	WireFixed64 = 1
-	WireBytes = 2
+	WireVarint     = 0
+	WireFixed64    = 1
+	WireBytes      = 2
 	WireStartGroup = 3
-	WireEndGroup = 4
-	WireFixed32 = 5
+	WireEndGroup   = 4
+	WireFixed32    = 5
 )
 
 const startSize = 10 // initial slice/string sizes
@@ -120,7 +120,7 @@ func (p *tagMap) get(t int) (int, bool) {
 
 func (p *tagMap) put(t int, fi int) {
 	if t > 0 && t < tagMapFastLimit {
-		for len(p.fastTags) < t + 1 {
+		for len(p.fastTags) < t+1 {
 			p.fastTags = append(p.fastTags, -1)
 		}
 		p.fastTags[t] = fi
@@ -148,9 +148,9 @@ type StructProperties struct {
 	oneofSizer       oneofSizer
 	stype            reflect.Type
 
-									// OneofTypes contains information about the oneof fields in this message.
-									// It is keyed by the original name of a field.
-	OneofTypes       map[string]*OneofProperties
+	// OneofTypes contains information about the oneof fields in this message.
+	// It is keyed by the original name of a field.
+	OneofTypes map[string]*OneofProperties
 }
 
 // OneofProperties represents information about a specific field in a oneof.
@@ -163,58 +163,54 @@ type OneofProperties struct {
 // Implement the sorting interface so we can sort the fields in tag order, as recommended by the spec.
 // See encode.go, (*Buffer).enc_struct.
 
-func (sp *StructProperties) Len() int {
-	return len(sp.order)
-}
+func (sp *StructProperties) Len() int { return len(sp.order) }
 func (sp *StructProperties) Less(i, j int) bool {
 	return sp.Prop[sp.order[i]].Tag < sp.Prop[sp.order[j]].Tag
 }
-func (sp *StructProperties) Swap(i, j int) {
-	sp.order[i], sp.order[j] = sp.order[j], sp.order[i]
-}
+func (sp *StructProperties) Swap(i, j int) { sp.order[i], sp.order[j] = sp.order[j], sp.order[i] }
 
 // Properties represents the protocol-specific behavior of a single struct field.
 type Properties struct {
-	Name          string            // name of the field, for error messages
-	OrigName      string            // original name before protocol compiler (always set)
-	JSONName      string            // name to use for JSON; determined by protoc
-	Wire          string
-	WireType      int
-	Tag           int
-	Required      bool
-	Optional      bool
-	Repeated      bool
-	Packed        bool              // relevant for repeated primitives only
-	Enum          string            // set for enum types only
-	proto3        bool              // whether this is known to be a proto3 field; set for []byte only
-	oneof         bool              // whether this is a oneof field
+	Name     string // name of the field, for error messages
+	OrigName string // original name before protocol compiler (always set)
+	JSONName string // name to use for JSON; determined by protoc
+	Wire     string
+	WireType int
+	Tag      int
+	Required bool
+	Optional bool
+	Repeated bool
+	Packed   bool   // relevant for repeated primitives only
+	Enum     string // set for enum types only
+	proto3   bool   // whether this is known to be a proto3 field; set for []byte only
+	oneof    bool   // whether this is a oneof field
 
-	Default       string            // default value
-	HasDefault    bool              // whether an explicit default was provided
-	def_uint64    uint64
+	Default    string // default value
+	HasDefault bool   // whether an explicit default was provided
+	def_uint64 uint64
 
 	enc           encoder
-	valEnc        valueEncoder      // set for bool and numeric types only
+	valEnc        valueEncoder // set for bool and numeric types only
 	field         field
-	tagcode       []byte            // encoding of EncodeVarint((Tag<<3)|WireType)
+	tagcode       []byte // encoding of EncodeVarint((Tag<<3)|WireType)
 	tagbuf        [8]byte
 	stype         reflect.Type      // set for struct types only
 	sprop         *StructProperties // set for struct types only
 	isMarshaler   bool
 	isUnmarshaler bool
 
-	mtype         reflect.Type      // set for map types only
-	mkeyprop      *Properties       // set for map types only
-	mvalprop      *Properties       // set for map types only
+	mtype    reflect.Type // set for map types only
+	mkeyprop *Properties  // set for map types only
+	mvalprop *Properties  // set for map types only
 
-	size          sizer
-	valSize       valueSizer        // set for bool and numeric types only
+	size    sizer
+	valSize valueSizer // set for bool and numeric types only
 
-	dec           decoder
-	valDec        valueDecoder      // set for bool and numeric types only
+	dec    decoder
+	valDec valueDecoder // set for bool and numeric types only
 
-									// If this is a packable field, this will be the decoder for the packed version of the field.
-	packedDec     decoder
+	// If this is a packable field, this will be the decoder for the packed version of the field.
+	packedDec decoder
 }
 
 // String formats the properties in the protobuf struct field tag style.
@@ -291,7 +287,7 @@ func (p *Properties) Parse(s string) {
 		p.valSize = sizeZigzag64
 	case "bytes", "group":
 		p.WireType = WireBytes
-	// no numeric converter for non-numeric types
+		// no numeric converter for non-numeric types
 	default:
 		fmt.Fprintf(os.Stderr, "proto: tag has unknown wire type: %q\n", s)
 		return
@@ -327,9 +323,9 @@ func (p *Properties) Parse(s string) {
 		case strings.HasPrefix(f, "def="):
 			p.HasDefault = true
 			p.Default = f[4:] // rest of string
-			if i + 1 < len(fields) {
+			if i+1 < len(fields) {
 				// Commas aren't escaped, and def is always last.
-				p.Default += "," + strings.Join(fields[i + 1:], ",")
+				p.Default += "," + strings.Join(fields[i+1:], ",")
 				break
 			}
 		}
@@ -575,14 +571,14 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lock
 	if p.Packed {
 		wire = WireBytes
 	}
-	x := uint32(p.Tag) << 3 | uint32(wire)
+	x := uint32(p.Tag)<<3 | uint32(wire)
 	i := 0
 	for i = 0; x > 127; i++ {
-		p.tagbuf[i] = 0x80 | uint8(x & 0x7F)
+		p.tagbuf[i] = 0x80 | uint8(x&0x7F)
 		x >>= 7
 	}
 	p.tagbuf[i] = uint8(x)
-	p.tagcode = p.tagbuf[0 : i + 1]
+	p.tagcode = p.tagbuf[0 : i+1]
 
 	if p.stype != nil {
 		if lockGetProp {
@@ -594,7 +590,7 @@ func (p *Properties) setEncAndDec(typ reflect.Type, f *reflect.StructField, lock
 }
 
 var (
-	marshalerType = reflect.TypeOf((*Marshaler)(nil)).Elem()
+	marshalerType   = reflect.TypeOf((*Marshaler)(nil)).Elem()
 	unmarshalerType = reflect.TypeOf((*Unmarshaler)(nil)).Elem()
 )
 
@@ -640,7 +636,7 @@ func (p *Properties) init(typ reflect.Type, name, tag string, f *reflect.StructF
 }
 
 var (
-	propertiesMu sync.RWMutex
+	propertiesMu  sync.RWMutex
 	propertiesMap = make(map[reflect.Type]*StructProperties)
 )
 
@@ -697,14 +693,12 @@ func getPropertiesLocked(t reflect.Type) *StructProperties {
 		name := f.Name
 		p.init(f.Type, name, f.Tag.Get("protobuf"), &f, false)
 
-		if f.Name == "XXX_extensions" {
-			// special case
+		if f.Name == "XXX_extensions" { // special case
 			p.enc = (*Buffer).enc_map
 			p.dec = nil // not needed
 			p.size = size_map
 		}
-		if f.Name == "XXX_unrecognized" {
-			// special case
+		if f.Name == "XXX_unrecognized" { // special case
 			prop.unrecField = toField(&f)
 		}
 		oneof := f.Tag.Get("protobuf_oneof") // special case
@@ -832,7 +826,7 @@ func EnumValueMap(enumType string) map[string]int32 {
 // A registry of all linked message types.
 // The string is a fully-qualified proto name ("pkg.Message").
 var (
-	protoTypes = make(map[string]reflect.Type)
+	protoTypes    = make(map[string]reflect.Type)
 	revProtoTypes = make(map[reflect.Type]string)
 )
 
@@ -850,11 +844,7 @@ func RegisterType(x Message, name string) {
 }
 
 // MessageName returns the fully-qualified proto name for the given message type.
-func MessageName(x Message) string {
-	return revProtoTypes[reflect.TypeOf(x)]
-}
+func MessageName(x Message) string { return revProtoTypes[reflect.TypeOf(x)] }
 
 // MessageType returns the message type (pointer to struct) for a named message.
-func MessageType(name string) reflect.Type {
-	return protoTypes[name]
-}
+func MessageType(name string) reflect.Type { return protoTypes[name] }

@@ -88,7 +88,7 @@ func EncodeVarint(x uint64) []byte {
 	var buf [maxVarintBytes]byte
 	var n int
 	for n = 0; x > 127; n++ {
-		buf[n] = 0x80 | uint8(x & 0x7F)
+		buf[n] = 0x80 | uint8(x&0x7F)
 		x >>= 7
 	}
 	buf[n] = uint8(x)
@@ -101,8 +101,8 @@ func EncodeVarint(x uint64) []byte {
 // int32, int64, uint32, uint64, bool, and enum
 // protocol buffer types.
 func (p *Buffer) EncodeVarint(x uint64) error {
-	for x >= 1 << 7 {
-		p.buf = append(p.buf, uint8(x & 0x7f | 0x80))
+	for x >= 1<<7 {
+		p.buf = append(p.buf, uint8(x&0x7f|0x80))
 		x >>= 7
 	}
 	p.buf = append(p.buf, uint8(x))
@@ -131,13 +131,13 @@ func sizeVarint(x uint64) (n int) {
 func (p *Buffer) EncodeFixed64(x uint64) error {
 	p.buf = append(p.buf,
 		uint8(x),
-		uint8(x >> 8),
-		uint8(x >> 16),
-		uint8(x >> 24),
-		uint8(x >> 32),
-		uint8(x >> 40),
-		uint8(x >> 48),
-		uint8(x >> 56))
+		uint8(x>>8),
+		uint8(x>>16),
+		uint8(x>>24),
+		uint8(x>>32),
+		uint8(x>>40),
+		uint8(x>>48),
+		uint8(x>>56))
 	return nil
 }
 
@@ -151,9 +151,9 @@ func sizeFixed64(x uint64) int {
 func (p *Buffer) EncodeFixed32(x uint64) error {
 	p.buf = append(p.buf,
 		uint8(x),
-		uint8(x >> 8),
-		uint8(x >> 16),
-		uint8(x >> 24))
+		uint8(x>>8),
+		uint8(x>>16),
+		uint8(x>>24))
 	return nil
 }
 
@@ -196,7 +196,7 @@ func (p *Buffer) EncodeRawBytes(b []byte) error {
 
 func sizeRawBytes(b []byte) int {
 	return sizeVarint(uint64(len(b))) +
-	len(b)
+		len(b)
 }
 
 // EncodeStringBytes writes an encoded string to the Buffer.
@@ -209,7 +209,7 @@ func (p *Buffer) EncodeStringBytes(s string) error {
 
 func sizeStringBytes(s string) int {
 	return sizeVarint(uint64(len(s))) +
-	len(s)
+		len(s)
 }
 
 // Marshaler is the interface representing objects that can marshal themselves.
@@ -1047,8 +1047,8 @@ func size_slice_struct_group(p *Properties, base structPointer) (n int) {
 	s := structPointer_StructPointerSlice(base, p.field)
 	l := s.Len()
 
-	n += l * sizeVarint(uint64((p.Tag << 3) | WireStartGroup))
-	n += l * sizeVarint(uint64((p.Tag << 3) | WireEndGroup))
+	n += l * sizeVarint(uint64((p.Tag<<3)|WireStartGroup))
+	n += l * sizeVarint(uint64((p.Tag<<3)|WireEndGroup))
 	for i := 0; i < l; i++ {
 		b := s.Index(i)
 		if structPointer_IsNil(b) {
@@ -1271,9 +1271,7 @@ var zeroes [20]byte // longer than any conceivable sizeVarint
 
 // Encode a struct, preceded by its encoded length (as a varint).
 func (o *Buffer) enc_len_struct(prop *StructProperties, base structPointer, state *errorState) error {
-	return o.enc_len_thing(func() error {
-		return o.enc_struct(prop, base)
-	}, state)
+	return o.enc_len_thing(func() error { return o.enc_struct(prop, base) }, state)
 }
 
 // Encode something, preceded by its encoded length (as a varint).
@@ -1291,16 +1289,16 @@ func (o *Buffer) enc_len_thing(enc func() error, state *errorState) error {
 	case x > 0: // actual length is x bytes larger than the space we reserved
 		// Move msg x bytes right.
 		o.buf = append(o.buf, zeroes[:x]...)
-		copy(o.buf[iMsg + x:], o.buf[iMsg:iMsg + lMsg])
+		copy(o.buf[iMsg+x:], o.buf[iMsg:iMsg+lMsg])
 	case x < 0: // actual length is x bytes smaller than the space we reserved
 		// Move msg x bytes left.
-		copy(o.buf[iMsg + x:], o.buf[iMsg:iMsg + lMsg])
-		o.buf = o.buf[:len(o.buf) + x] // x is negative
+		copy(o.buf[iMsg+x:], o.buf[iMsg:iMsg+lMsg])
+		o.buf = o.buf[:len(o.buf)+x] // x is negative
 	}
 	// Encode the length in the reserved space.
 	o.buf = o.buf[:iLen]
 	o.EncodeVarint(uint64(lMsg))
-	o.buf = o.buf[:len(o.buf) + lMsg]
+	o.buf = o.buf[:len(o.buf)+lMsg]
 	return state.err
 }
 

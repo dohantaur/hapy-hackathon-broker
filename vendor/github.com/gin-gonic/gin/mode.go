@@ -13,14 +13,14 @@ import (
 const ENV_GIN_MODE = "GIN_MODE"
 
 const (
-	DebugMode string = "debug"
+	DebugMode   string = "debug"
 	ReleaseMode string = "release"
-	TestMode string = "test"
+	TestMode    string = "test"
 )
 const (
-	debugCode = iota
+	debugCode   = iota
 	releaseCode = iota
-	testCode = iota
+	testCode    = iota
 )
 
 // DefaultWriter is the default io.Writer used the Gin for debug output and

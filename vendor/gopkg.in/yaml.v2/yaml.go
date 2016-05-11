@@ -164,7 +164,7 @@ func fail(err error) {
 }
 
 func failf(format string, args ...interface{}) {
-	panic(yamlError{fmt.Errorf("yaml: " + format, args...)})
+	panic(yamlError{fmt.Errorf("yaml: "+format, args...)})
 }
 
 // A TypeError is returned by Unmarshal when one or more fields in
@@ -192,7 +192,7 @@ type structInfo struct {
 
 	// InlineMap is the number of the field in the struct that
 	// contains an ,inline map, or -1 if there's none.
-	InlineMap  int
+	InlineMap int
 }
 
 type fieldInfo struct {
@@ -202,7 +202,7 @@ type fieldInfo struct {
 	Flow      bool
 
 	// Inline holds the field index if the field is part of an inlined struct.
-	Inline    []int
+	Inline []int
 }
 
 var structMap = make(map[reflect.Type]*structInfo)

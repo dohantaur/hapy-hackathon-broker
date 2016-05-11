@@ -15,10 +15,10 @@ import (
 )
 
 var (
-	dunno = []byte("???")
+	dunno     = []byte("???")
 	centerDot = []byte("·")
-	dot = []byte(".")
-	slash = []byte("/")
+	dot       = []byte(".")
+	slash     = []byte("/")
 )
 
 // Recovery returns a middleware that recovers from any panics and writes a 500 if there was one.
@@ -53,8 +53,7 @@ func stack(skip int) []byte {
 	// loaded file.
 	var lines [][]byte
 	var lastFile string
-	for i := skip; ; i++ {
-		// Skip the expected number of frames
+	for i := skip; ; i++ { // Skip the expected number of frames
 		pc, file, line, ok := runtime.Caller(i)
 		if !ok {
 			break
@@ -99,10 +98,10 @@ func function(pc uintptr) []byte {
 	// Also the package path might contains dot (e.g. code.google.com/...),
 	// so first eliminate the path prefix
 	if lastslash := bytes.LastIndex(name, slash); lastslash >= 0 {
-		name = name[lastslash + 1:]
+		name = name[lastslash+1:]
 	}
 	if period := bytes.Index(name, dot); period >= 0 {
-		name = name[period + 1:]
+		name = name[period+1:]
 	}
 	name = bytes.Replace(name, centerDot, dot, -1)
 	return name

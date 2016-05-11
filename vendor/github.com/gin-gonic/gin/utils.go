@@ -117,7 +117,7 @@ func lastChar(str string) uint8 {
 	if size == 0 {
 		panic("The length of the string can't be 0")
 	}
-	return str[size - 1]
+	return str[size-1]
 }
 
 func nameOfFunction(f interface{}) string {

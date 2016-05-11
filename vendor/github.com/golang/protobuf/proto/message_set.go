@@ -134,21 +134,17 @@ func (ms *messageSet) Marshal(pb Message) error {
 	return nil
 }
 
-func (ms *messageSet) Reset() {
-	*ms = messageSet{}
-}
-func (ms *messageSet) String() string {
-	return CompactTextString(ms)
-}
-func (*messageSet) ProtoMessage() {}
+func (ms *messageSet) Reset()         { *ms = messageSet{} }
+func (ms *messageSet) String() string { return CompactTextString(ms) }
+func (*messageSet) ProtoMessage()     {}
 
 // Support for the message_set_wire_format message option.
 
 func skipVarint(buf []byte) []byte {
 	i := 0
-	for ; buf[i] & 0x80 != 0; i++ {
+	for ; buf[i]&0x80 != 0; i++ {
 	}
-	return buf[i + 1:]
+	return buf[i+1:]
 }
 
 // MarshalMessageSet encodes the extension map represented by m in the message set wire format.
@@ -193,7 +189,7 @@ func UnmarshalMessageSet(buf []byte, m map[int32]Extension) error {
 
 		// Restore wire type and field number varint, plus length varint.
 		// Be careful to preserve duplicate items.
-		b := EncodeVarint(uint64(id) << 3 | WireBytes)
+		b := EncodeVarint(uint64(id)<<3 | WireBytes)
 		if ext, ok := m[id]; ok {
 			// Existing data; rip off the tag and length varint
 			// so we join the new data correctly.

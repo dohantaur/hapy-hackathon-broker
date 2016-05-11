@@ -23,7 +23,7 @@ func (d *decoder) dispatchEvent(event Event, data string) {
 	dataLength := len(data)
 	if dataLength > 0 {
 		//If the data buffer's last character is a U+000A LINE FEED (LF) character, then remove the last character from the data buffer.
-		data = data[:dataLength - 1]
+		data = data[:dataLength-1]
 		dataLength--
 	}
 	if dataLength == 0 && event.Event == "" {
@@ -73,7 +73,7 @@ func (d *decoder) decode(r io.Reader) ([]Event, error) {
 			field = line[:colonIndex]
 			// Collect the characters on the line after the first U+003A COLON character (:),
 			// and let value be that string.
-			value = line[colonIndex + 1:]
+			value = line[colonIndex+1:]
 			// If value starts with a single U+0020 SPACE character, remove it from value.
 			if len(value) > 0 && value[0] == ' ' {
 				value = value[1:]

@@ -268,10 +268,10 @@ func IsISBN13(v *Validate, topStruct reflect.Value, currentStructOrField reflect
 	factor := []int32{1, 3}
 
 	for i = 0; i < 12; i++ {
-		checksum += factor[i % 2] * int32(s[i] - '0')
+		checksum += factor[i%2] * int32(s[i]-'0')
 	}
 
-	if (int32(s[12] - '0')) - ((10 - (checksum % 10)) % 10) == 0 {
+	if (int32(s[12]-'0'))-((10-(checksum%10))%10) == 0 {
 		return true
 	}
 
@@ -292,16 +292,16 @@ func IsISBN10(v *Validate, topStruct reflect.Value, currentStructOrField reflect
 	var i int32
 
 	for i = 0; i < 9; i++ {
-		checksum += (i + 1) * int32(s[i] - '0')
+		checksum += (i + 1) * int32(s[i]-'0')
 	}
 
 	if s[9] == 'X' {
 		checksum += 10 * 10
 	} else {
-		checksum += 10 * int32(s[9] - '0')
+		checksum += 10 * int32(s[9]-'0')
 	}
 
-	if checksum % 11 == 0 {
+	if checksum%11 == 0 {
 		return true
 	}
 
@@ -1299,7 +1299,7 @@ func IsTCP6AddrResolvable(v *Validate, topStruct reflect.Value, currentStructOrF
 func IsTCPAddrResolvable(v *Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 
 	if !isIP4Addr(v, topStruct, currentStructOrField, field, fieldType, fieldKind, param) &&
-	!isIP6Addr(v, topStruct, currentStructOrField, field, fieldType, fieldKind, param) {
+		!isIP6Addr(v, topStruct, currentStructOrField, field, fieldType, fieldKind, param) {
 		return false
 	}
 
@@ -1336,7 +1336,7 @@ func IsUDP6AddrResolvable(v *Validate, topStruct reflect.Value, currentStructOrF
 func IsUDPAddrResolvable(v *Validate, topStruct reflect.Value, currentStructOrField reflect.Value, field reflect.Value, fieldType reflect.Type, fieldKind reflect.Kind, param string) bool {
 
 	if !isIP4Addr(v, topStruct, currentStructOrField, field, fieldType, fieldKind, param) &&
-	!isIP6Addr(v, topStruct, currentStructOrField, field, fieldType, fieldKind, param) {
+		!isIP6Addr(v, topStruct, currentStructOrField, field, fieldType, fieldKind, param) {
 		return false
 	}
 
@@ -1405,8 +1405,8 @@ func isIP6Addr(v *Validate, topStruct reflect.Value, currentStructOrField reflec
 	val := field.String()
 
 	if idx := strings.LastIndex(val, ":"); idx != -1 {
-		if idx != 0 && val[idx - 1:idx] == "]" {
-			val = val[1 : idx - 1]
+		if idx != 0 && val[idx-1:idx] == "]" {
+			val = val[1 : idx-1]
 		}
 	}
 

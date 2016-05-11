@@ -7,12 +7,8 @@ import (
 
 type keyList []reflect.Value
 
-func (l keyList) Len() int {
-	return len(l)
-}
-func (l keyList) Swap(i, j int) {
-	l[i], l[j] = l[j], l[i]
-}
+func (l keyList) Len() int      { return len(l) }
+func (l keyList) Swap(i, j int) { l[i], l[j] = l[j], l[i] }
 func (l keyList) Less(i, j int) bool {
 	a := l[i]
 	b := l[j]
@@ -56,10 +52,10 @@ func (l keyList) Less(i, j int) bool {
 		var ai, bi int
 		var an, bn int64
 		for ai = i; ai < len(ar) && unicode.IsDigit(ar[ai]); ai++ {
-			an = an * 10 + int64(ar[ai] - '0')
+			an = an*10 + int64(ar[ai]-'0')
 		}
 		for bi = i; bi < len(br) && unicode.IsDigit(br[bi]); bi++ {
-			bn = bn * 10 + int64(br[bi] - '0')
+			bn = bn*10 + int64(br[bi]-'0')
 		}
 		if an != bn {
 			return an < bn

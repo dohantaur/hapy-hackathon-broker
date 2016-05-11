@@ -14,13 +14,13 @@ import (
 type ErrorType uint64
 
 const (
-	ErrorTypeBind ErrorType = 1 << 63 // used when c.Bind() fails
-	ErrorTypeRender ErrorType = 1 << 62 // used when c.Render() fails
+	ErrorTypeBind    ErrorType = 1 << 63 // used when c.Bind() fails
+	ErrorTypeRender  ErrorType = 1 << 62 // used when c.Render() fails
 	ErrorTypePrivate ErrorType = 1 << 0
-	ErrorTypePublic ErrorType = 1 << 1
+	ErrorTypePublic  ErrorType = 1 << 1
 
-	ErrorTypeAny ErrorType = 1 << 64 - 1
-	ErrorTypeNu = 2
+	ErrorTypeAny ErrorType = 1<<64 - 1
+	ErrorTypeNu            = 2
 )
 
 type (
@@ -103,7 +103,7 @@ func (a errorMsgs) ByType(typ ErrorType) errorMsgs {
 func (a errorMsgs) Last() *Error {
 	length := len(a)
 	if length > 0 {
-		return a[length - 1]
+		return a[length-1]
 	}
 	return nil
 }

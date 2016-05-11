@@ -119,14 +119,14 @@ func (p *Buffer) DecodeFixed64() (x uint64, err error) {
 	}
 	p.index = i
 
-	x = uint64(p.buf[i - 8])
-	x |= uint64(p.buf[i - 7]) << 8
-	x |= uint64(p.buf[i - 6]) << 16
-	x |= uint64(p.buf[i - 5]) << 24
-	x |= uint64(p.buf[i - 4]) << 32
-	x |= uint64(p.buf[i - 3]) << 40
-	x |= uint64(p.buf[i - 2]) << 48
-	x |= uint64(p.buf[i - 1]) << 56
+	x = uint64(p.buf[i-8])
+	x |= uint64(p.buf[i-7]) << 8
+	x |= uint64(p.buf[i-6]) << 16
+	x |= uint64(p.buf[i-5]) << 24
+	x |= uint64(p.buf[i-4]) << 32
+	x |= uint64(p.buf[i-3]) << 40
+	x |= uint64(p.buf[i-2]) << 48
+	x |= uint64(p.buf[i-1]) << 56
 	return
 }
 
@@ -142,10 +142,10 @@ func (p *Buffer) DecodeFixed32() (x uint64, err error) {
 	}
 	p.index = i
 
-	x = uint64(p.buf[i - 4])
-	x |= uint64(p.buf[i - 3]) << 8
-	x |= uint64(p.buf[i - 2]) << 16
-	x |= uint64(p.buf[i - 1]) << 24
+	x = uint64(p.buf[i-4])
+	x |= uint64(p.buf[i-3]) << 8
+	x |= uint64(p.buf[i-2]) << 16
+	x |= uint64(p.buf[i-1]) << 24
 	return
 }
 
@@ -157,7 +157,7 @@ func (p *Buffer) DecodeZigzag64() (x uint64, err error) {
 	if err != nil {
 		return
 	}
-	x = (x >> 1) ^ uint64((int64(x & 1) << 63) >> 63)
+	x = (x >> 1) ^ uint64((int64(x&1)<<63)>>63)
 	return
 }
 
@@ -169,7 +169,7 @@ func (p *Buffer) DecodeZigzag32() (x uint64, err error) {
 	if err != nil {
 		return
 	}
-	x = uint64((uint32(x) >> 1) ^ uint32((int32(x & 1) << 31) >> 31))
+	x = uint64((uint32(x) >> 1) ^ uint32((int32(x&1)<<31)>>31))
 	return
 }
 
@@ -238,7 +238,7 @@ func (o *Buffer) skipAndSave(t reflect.Type, tag, wire int, base structPointer, 
 	obuf := o.buf
 
 	o.buf = *ptr
-	o.EncodeVarint(uint64(tag << 3 | wire))
+	o.EncodeVarint(uint64(tag<<3 | wire))
 	*ptr = append(o.buf, obuf[oi:o.index]...)
 
 	o.buf = obuf
@@ -440,8 +440,8 @@ func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, is_group
 			// Successfully decoded a required field.
 			if tag <= 64 {
 				// use bitmap for fields 1-64 to catch field reuse.
-				var mask uint64 = 1 << uint64(tag - 1)
-				if reqFields & mask == 0 {
+				var mask uint64 = 1 << uint64(tag-1)
+				if reqFields&mask == 0 {
 					// new required field
 					reqFields |= mask
 					required--
@@ -481,7 +481,7 @@ func (o *Buffer) unmarshalType(st reflect.Type, prop *StructProperties, is_group
 // The goal is modest amortization and allocation
 // on at least 16-byte boundaries.
 const (
-	boolPoolSize = 16
+	boolPoolSize   = 16
 	uint32PoolSize = 8
 	uint64PoolSize = 4
 )

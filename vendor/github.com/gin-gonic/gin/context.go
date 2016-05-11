@@ -22,12 +22,12 @@ import (
 
 // Content-Type MIME of the most common data formats
 const (
-	MIMEJSON = binding.MIMEJSON
-	MIMEHTML = binding.MIMEHTML
-	MIMEXML = binding.MIMEXML
-	MIMEXML2 = binding.MIMEXML2
-	MIMEPlain = binding.MIMEPlain
-	MIMEPOSTForm = binding.MIMEPOSTForm
+	MIMEJSON              = binding.MIMEJSON
+	MIMEHTML              = binding.MIMEHTML
+	MIMEXML               = binding.MIMEXML
+	MIMEXML2              = binding.MIMEXML2
+	MIMEPlain             = binding.MIMEPlain
+	MIMEPOSTForm          = binding.MIMEPOSTForm
 	MIMEMultipartPOSTForm = binding.MIMEMultipartPOSTForm
 )
 
@@ -40,14 +40,14 @@ type Context struct {
 	Request   *http.Request
 	Writer    ResponseWriter
 
-	Params    Params
-	handlers  HandlersChain
-	index     int8
+	Params   Params
+	handlers HandlersChain
+	index    int8
 
-	engine    *Engine
-	Keys      map[string]interface{}
-	Errors    errorMsgs
-	Accepted  []string
+	engine   *Engine
+	Keys     map[string]interface{}
+	Errors   errorMsgs
+	Accepted []string
 }
 
 var _ context.Context = &Context{}
@@ -358,13 +358,13 @@ func (c *Context) Header(key, value string) {
 }
 
 func (c *Context) SetCookie(
-name string,
-value string,
-maxAge int,
-path string,
-domain string,
-secure bool,
-httpOnly bool,
+	name string,
+	value string,
+	maxAge int,
+	path string,
+	domain string,
+	secure bool,
+	httpOnly bool,
 ) {
 	if path == "" {
 		path = "/"

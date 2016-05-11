@@ -19,30 +19,30 @@ import (
 )
 
 const (
-	utf8HexComma = "0x2C"
-	utf8Pipe = "0x7C"
-	tagSeparator = ","
-	orSeparator = "|"
-	tagKeySeparator = "="
-	structOnlyTag = "structonly"
-	noStructLevelTag = "nostructlevel"
-	omitempty = "omitempty"
-	skipValidationTag = "-"
-	diveTag = "dive"
-	existsTag = "exists"
-	fieldErrMsg = "Key: '%s' Error:Field validation for '%s' failed on the '%s' tag"
-	arrayIndexFieldName = "%s" + leftBracket + "%d" + rightBracket
-	mapIndexFieldName = "%s" + leftBracket + "%v" + rightBracket
-	invalidValidation = "Invalid validation tag on field %s"
-	undefinedValidation = "Undefined validation function on field %s"
+	utf8HexComma            = "0x2C"
+	utf8Pipe                = "0x7C"
+	tagSeparator            = ","
+	orSeparator             = "|"
+	tagKeySeparator         = "="
+	structOnlyTag           = "structonly"
+	noStructLevelTag        = "nostructlevel"
+	omitempty               = "omitempty"
+	skipValidationTag       = "-"
+	diveTag                 = "dive"
+	existsTag               = "exists"
+	fieldErrMsg             = "Key: '%s' Error:Field validation for '%s' failed on the '%s' tag"
+	arrayIndexFieldName     = "%s" + leftBracket + "%d" + rightBracket
+	mapIndexFieldName       = "%s" + leftBracket + "%v" + rightBracket
+	invalidValidation       = "Invalid validation tag on field %s"
+	undefinedValidation     = "Undefined validation function on field %s"
 	validatorNotInitialized = "Validator instance not initialized"
-	fieldNameRequired = "Field Name Required"
-	tagRequired = "Tag Required"
+	fieldNameRequired       = "Field Name Required"
+	tagRequired             = "Tag Required"
 )
 
 var (
-	timeType = reflect.TypeOf(time.Time{})
-	timePtrType = reflect.TypeOf(&time.Time{})
+	timeType       = reflect.TypeOf(time.Time{})
+	timePtrType    = reflect.TypeOf(&time.Time{})
 	emptyStructPtr = new(struct{})
 )
 
@@ -73,7 +73,7 @@ func (sl *StructLevel) ReportValidationErrors(relativeKey string, errs Validatio
 
 		if idx != -1 {
 			rel = relativeKey[:idx]
-			cRel = relativeKey[idx + 1:]
+			cRel = relativeKey[idx+1:]
 		} else {
 			rel = relativeKey
 		}
@@ -435,7 +435,7 @@ func (v *Validate) StructExcept(current interface{}, fields ...string) error {
 	m := map[string]*struct{}{}
 
 	for _, key := range fields {
-		m[name + namespaceSeparator + key] = emptyStructPtr
+		m[name+namespaceSeparator+key] = emptyStructPtr
 	}
 
 	errs := v.errsPool.Get().(ValidationErrors)
@@ -518,7 +518,7 @@ func (v *Validate) tranverseStruct(topStruct reflect.Value, currentStruct reflec
 
 				if partial {
 
-					_, ok = includeExclude[errPrefix + fld.Name]
+					_, ok = includeExclude[errPrefix+fld.Name]
 
 					if (ok && exclude) || (!ok && !exclude) {
 						continue
@@ -549,7 +549,7 @@ func (v *Validate) tranverseStruct(topStruct reflect.Value, currentStruct reflec
 
 				if partial {
 
-					_, ok = includeExclude[errPrefix + f.Name]
+					_, ok = includeExclude[errPrefix+f.Name]
 
 					if (ok && exclude) || (!ok && !exclude) {
 						continue
@@ -643,7 +643,7 @@ func (v *Validate) traverseField(topStruct reflect.Value, currentStruct reflect.
 				return
 			}
 
-			v.tranverseStruct(topStruct, current, current, errPrefix + name + namespaceSeparator, nsPrefix + customName + namespaceSeparator, errs, false, partial, exclude, includeExclude, cTag.isStructOnly)
+			v.tranverseStruct(topStruct, current, current, errPrefix+name+namespaceSeparator, nsPrefix+customName+namespaceSeparator, errs, false, partial, exclude, includeExclude, cTag.isStructOnly)
 			return
 		}
 	}
@@ -753,7 +753,7 @@ func (v *Validate) validateField(topStruct reflect.Value, currentStruct reflect.
 				Kind:           currentKind,
 			}
 		} else {
-			errs[errPrefix + name] = &FieldError{
+			errs[errPrefix+name] = &FieldError{
 				FieldNamespace: ns,
 				NameNamespace:  nsPrefix + customName,
 				Name:           customName,

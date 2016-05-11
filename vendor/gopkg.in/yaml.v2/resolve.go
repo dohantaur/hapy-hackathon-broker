@@ -111,7 +111,7 @@ func resolve(tag string, in string) (rtag string, out interface{}) {
 
 		switch hint {
 		case 'M':
-		// We've already checked the map above.
+			// We've already checked the map above.
 
 		case '.':
 			// Not in the map, so maybe a normal float.
@@ -162,7 +162,7 @@ func resolve(tag string, in string) (rtag string, out interface{}) {
 					}
 				}
 			}
-		// XXX Handle timestamps here.
+			// XXX Handle timestamps here.
 
 		default:
 			panic("resolveTable item not yet handled: " + string(rune(hint)) + " (with " + in + ")")
@@ -182,8 +182,8 @@ func resolve(tag string, in string) (rtag string, out interface{}) {
 func encodeBase64(s string) string {
 	const lineLen = 70
 	encLen := base64.StdEncoding.EncodedLen(len(s))
-	lines := encLen / lineLen + 1
-	buf := make([]byte, encLen * 2 + lines)
+	lines := encLen/lineLen + 1
+	buf := make([]byte, encLen*2+lines)
 	in := buf[0:encLen]
 	out := buf[encLen:]
 	base64.StdEncoding.Encode(in, []byte(s))

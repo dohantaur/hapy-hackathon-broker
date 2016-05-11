@@ -299,9 +299,7 @@ const collectStats = false
 var stats Stats
 
 // GetStats returns a copy of the global Stats structure.
-func GetStats() Stats {
-	return stats
-}
+func GetStats() Stats { return stats }
 
 // A Buffer is a buffer manager for marshaling and unmarshaling
 // protocol buffers.  It may be reused between invocations to
@@ -309,15 +307,15 @@ func GetStats() Stats {
 // the global functions Marshal and Unmarshal create a
 // temporary Buffer and are fine for most applications.
 type Buffer struct {
-	buf      []byte // encode/decode byte stream
-	index    int    // write point
+	buf   []byte // encode/decode byte stream
+	index int    // write point
 
-					// pools of basic types to amortize allocation.
-	bools    []bool
-	uint32s  []uint32
-	uint64s  []uint64
+	// pools of basic types to amortize allocation.
+	bools   []bool
+	uint32s []uint32
+	uint64s []uint64
 
-					// extra pools, only used with pointer_reflect.go
+	// extra pools, only used with pointer_reflect.go
 	int32s   []int32
 	int64s   []int64
 	float32s []float32
@@ -344,9 +342,7 @@ func (p *Buffer) SetBuf(s []byte) {
 }
 
 // Bytes returns the contents of the Buffer.
-func (p *Buffer) Bytes() []byte {
-	return p.buf
-}
+func (p *Buffer) Bytes() []byte { return p.buf }
 
 /*
  * Helper routines for simplifying the creation of optional fields of basic type.
@@ -459,7 +455,7 @@ func (p *Buffer) DebugPrint(s string, b []byte) {
 
 	fmt.Printf("\n--- %s ---\n", s)
 
-	out:
+out:
 	for {
 		for i := 0; i < depth; i++ {
 			fmt.Print("  ")
@@ -694,7 +690,7 @@ var (
 	// defaults maps a protocol buffer struct type to a slice of the fields,
 	// with its scalar fields set to their proto-declared non-zero default values.
 	defaultMu sync.RWMutex
-	defaults = make(map[reflect.Type]defaultMessage)
+	defaults  = make(map[reflect.Type]defaultMessage)
 
 	int32PtrType = reflect.TypeOf((*int32)(nil))
 )
@@ -857,13 +853,9 @@ func mapKeys(vs []reflect.Value) sort.Interface {
 	}
 	switch vs[0].Kind() {
 	case reflect.Int32, reflect.Int64:
-		s.less = func(a, b reflect.Value) bool {
-			return a.Int() < b.Int()
-		}
+		s.less = func(a, b reflect.Value) bool { return a.Int() < b.Int() }
 	case reflect.Uint32, reflect.Uint64:
-		s.less = func(a, b reflect.Value) bool {
-			return a.Uint() < b.Uint()
-		}
+		s.less = func(a, b reflect.Value) bool { return a.Uint() < b.Uint() }
 	}
 
 	return s
@@ -874,12 +866,8 @@ type mapKeySorter struct {
 	less func(a, b reflect.Value) bool
 }
 
-func (s mapKeySorter) Len() int {
-	return len(s.vs)
-}
-func (s mapKeySorter) Swap(i, j int) {
-	s.vs[i], s.vs[j] = s.vs[j], s.vs[i]
-}
+func (s mapKeySorter) Len() int      { return len(s.vs) }
+func (s mapKeySorter) Swap(i, j int) { s.vs[i], s.vs[j] = s.vs[j], s.vs[i] }
 func (s mapKeySorter) Less(i, j int) bool {
 	return s.less(s.vs[i], s.vs[j])
 }

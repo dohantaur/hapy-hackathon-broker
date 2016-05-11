@@ -77,9 +77,7 @@ func toField(f *reflect.StructField) field {
 var invalidField = field(nil)
 
 // IsValid reports whether the field identifier is valid.
-func (f field) IsValid() bool {
-	return f != nil
-}
+func (f field) IsValid() bool { return f != nil }
 
 // field returns the given field in the struct as a reflect value.
 func structPointer_field(p structPointer, f field) reflect.Value {
@@ -172,22 +170,18 @@ type structPointerSlice struct {
 	v reflect.Value
 }
 
-func (p structPointerSlice) Len() int {
-	return p.v.Len()
-}
-func (p structPointerSlice) Index(i int) structPointer {
-	return structPointer{p.v.Index(i)}
-}
+func (p structPointerSlice) Len() int                  { return p.v.Len() }
+func (p structPointerSlice) Index(i int) structPointer { return structPointer{p.v.Index(i)} }
 func (p structPointerSlice) Append(q structPointer) {
 	p.v.Set(reflect.Append(p.v, q.v))
 }
 
 var (
-	int32Type = reflect.TypeOf(int32(0))
-	uint32Type = reflect.TypeOf(uint32(0))
+	int32Type   = reflect.TypeOf(int32(0))
+	uint32Type  = reflect.TypeOf(uint32(0))
 	float32Type = reflect.TypeOf(float32(0))
-	int64Type = reflect.TypeOf(int64(0))
-	uint64Type = reflect.TypeOf(uint64(0))
+	int64Type   = reflect.TypeOf(int64(0))
+	uint64Type  = reflect.TypeOf(uint64(0))
 	float64Type = reflect.TypeOf(float64(0))
 )
 

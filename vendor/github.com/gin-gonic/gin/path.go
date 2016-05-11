@@ -37,11 +37,11 @@ func cleanPath(p string) string {
 
 	if p[0] != '/' {
 		r = 0
-		buf = make([]byte, n + 1)
+		buf = make([]byte, n+1)
 		buf[0] = '/'
 	}
 
-	trailing := n > 2 && p[n - 1] == '/'
+	trailing := n > 2 && p[n-1] == '/'
 
 	// A bit more clunky without a 'lazybuf' like the path package, but the loop
 	// gets completely inlined (bufApp). So in contrast to the path package this
@@ -53,15 +53,15 @@ func cleanPath(p string) string {
 			// empty path element, trailing slash is added after the end
 			r++
 
-		case p[r] == '.' && r + 1 == n:
+		case p[r] == '.' && r+1 == n:
 			trailing = true
 			r++
 
-		case p[r] == '.' && p[r + 1] == '/':
+		case p[r] == '.' && p[r+1] == '/':
 			// . element
 			r++
 
-		case p[r] == '.' && p[r + 1] == '.' && (r + 2 == n || p[r + 2] == '/'):
+		case p[r] == '.' && p[r+1] == '.' && (r+2 == n || p[r+2] == '/'):
 			// .. element: remove to last /
 			r += 2
 

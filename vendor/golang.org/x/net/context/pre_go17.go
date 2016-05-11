@@ -45,7 +45,7 @@ func (e *emptyCtx) String() string {
 
 var (
 	background = new(emptyCtx)
-	todo = new(emptyCtx)
+	todo       = new(emptyCtx)
 )
 
 // Canceled is the error returned by Context.Err when the context is canceled.
@@ -64,9 +64,7 @@ var DeadlineExceeded = errors.New("context deadline exceeded")
 func WithCancel(parent Context) (ctx Context, cancel CancelFunc) {
 	c := newCancelCtx(parent)
 	propagateCancel(parent, c)
-	return c, func() {
-		c.cancel(true, Canceled)
-	}
+	return c, func() { c.cancel(true, Canceled) }
 }
 
 // newCancelCtx returns an initialized cancelCtx.
@@ -148,7 +146,7 @@ type canceler interface {
 type cancelCtx struct {
 	Context
 
-	done     chan struct{}     // closed by the first cancel call.
+	done chan struct{} // closed by the first cancel call.
 
 	mu       sync.Mutex
 	children map[canceler]bool // set to nil by the first cancel call
@@ -216,9 +214,7 @@ func WithDeadline(parent Context, deadline time.Time) (Context, CancelFunc) {
 	d := deadline.Sub(time.Now())
 	if d <= 0 {
 		c.cancel(true, DeadlineExceeded) // deadline has already passed
-		return c, func() {
-			c.cancel(true, Canceled)
-		}
+		return c, func() { c.cancel(true, Canceled) }
 	}
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -227,9 +223,7 @@ func WithDeadline(parent Context, deadline time.Time) (Context, CancelFunc) {
 			c.cancel(true, DeadlineExceeded)
 		})
 	}
-	return c, func() {
-		c.cancel(true, Canceled)
-	}
+	return c, func() { c.cancel(true, Canceled) }
 }
 
 // A timerCtx carries a timer and a deadline.  It embeds a cancelCtx to
@@ -237,7 +231,7 @@ func WithDeadline(parent Context, deadline time.Time) (Context, CancelFunc) {
 // delegating to cancelCtx.cancel.
 type timerCtx struct {
 	*cancelCtx
-	timer    *time.Timer // Under cancelCtx.mu.
+	timer *time.Timer // Under cancelCtx.mu.
 
 	deadline time.Time
 }
