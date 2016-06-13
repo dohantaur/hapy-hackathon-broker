@@ -13,8 +13,9 @@ func main() {
 
 	conf := application.NewConfig()
 	dataStore := application.NewDataStore(conf)
+	rabbit := application.NewRabbit(conf)
 	r := gin.Default()
 
-	app := application.NewApp(conf, dataStore, r)
+	app := application.NewApp(conf, dataStore, r, rabbit)
 	app.Start()
 }

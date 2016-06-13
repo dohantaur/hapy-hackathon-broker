@@ -3,8 +3,12 @@ package application
 // Route processing; Need to create controllers
 func Route(app *App) {
 
-	dataController := NewDataController(app)
+	dataHistoryController := NewDataHistoryController(app)
+	GreenHouseController := NewGreenHouseController(app)
 
-	app.Router.POST("data", dataController.Post)
-	app.Router.GET("data/:id", dataController.All)
+	app.Router.POST("data", dataHistoryController.Post)
+	app.Router.POST("green_houses", GreenHouseController.Post)
+	app.Router.GET("green_house/:id", GreenHouseController.One)
+	app.Router.GET("green_house/:id/history", GreenHouseController.History)
+	app.Router.GET("green_house/:id/action", GreenHouseController.Action)
 }
