@@ -58,7 +58,7 @@ func (r *Rabbit) SendAction(msg string) error {
 	}
 	q, err := ch.QueueDeclare(
 		"action", // name
-		true,    // durable
+		false,    // durable
 		false,    // delete when unused
 		false,    // exclusive
 		false,    // no-wait
