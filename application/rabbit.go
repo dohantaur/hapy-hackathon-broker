@@ -58,25 +58,28 @@ func NewRabbit(c *Config) *Rabbit {
 
 func (r *Rabbit) SendAction(msg string) error {
 	fmt.Println("send message: [%s]", msg)
-	conn, err := amqp.Dial(os.Getenv("RABBIT_URL"))
+	conn, err := amqp.Dial(os.Getenv("CLOUDAMQP_URL"))
 	if err != nil {
-		log.Fatal("cannot connect to rabbitmq")
+		log.Println("cannot connect to rabbitmq")
+		return err
 	}
 	ch, err := conn.Channel()
 	defer ch.Close()
 	if err != nil {
-		log.Fatal("cannot open channel: %s", err)
+		log.Println("cannot open channel: %s", err)
+		return err
 	}
 	q, err := ch.QueueDeclare(
 		"action", // name
-		false,    // durable
+		true,    // durable
 		false,    // delete when unused
 		false,    // exclusive
 		false,    // no-wait
 		nil,      // arguments
 	)
 	if err != nil {
-		log.Fatal("cannot ExchangeDeclare")
+		log.Println("cannot ExchangeDeclare")
+		return err
 	}
 	err = ch.Publish(
 		"",     // exchange

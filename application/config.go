@@ -3,6 +3,7 @@ package application
 import (
 	"log"
 	"os"
+	"strings"
 )
 
 type Config struct {
@@ -25,7 +26,10 @@ func NewConfig() *Config {
 	}
 	mongoDBName := os.Getenv("MONGO_DB")
 	if mongoDBName == "" {
-		log.Fatal("MONGO_DB must be set")
+		log.Println("MONGO_DB env var not present, fallback to uri")
+		splitted := strings.Split(mongoUrl, "/")
+		mongoDBName = splitted[len(splitted)-1]
+
 	}
 	ginMode := os.Getenv("GIN_MODE")
 	if ginMode == "" {
@@ -41,7 +45,7 @@ func NewConfig() *Config {
 	}
 	host := os.Getenv("HOST")
 	if host == "" {
-		log.Fatal("$HOST must be set")
+		log.Println("$HOST not set, fallback to default")
 	}
 	return &Config{
 		Port:        port,
