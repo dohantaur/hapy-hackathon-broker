@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hackathon-hapy-broker/application"
+	"github.com/dohantaur/hapy-hackathon-broker/application"
 	"github.com/joho/godotenv"
 	"log"
 )

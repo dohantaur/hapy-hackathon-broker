@@ -3,7 +3,7 @@ package application
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/hackathon-hapy-broker/models"
+	"github.com/dohantaur/hapy-hackathon-broker/models"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"log"

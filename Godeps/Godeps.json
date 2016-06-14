@@ -1,9 +1,6 @@
 {
-	"ImportPath": "github.com/hackathon-hapy-broker",
+	"ImportPath": "github.com/dohantaur/hapy-hackathon-broker",
 	"GoVersion": "go1.6",
 	"GodepVersion": "v62",
-	"Packages": [
-		"github.com/dohantaur/hapy-hackathon-broker/cmd/..."
-	],
 	"Deps": []
 }
