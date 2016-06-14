@@ -1,0 +1,15 @@
+{
+  "name": "hapy-hackathon-broker",
+  "description": "hapy broker app",
+  "keywords": [
+    "go",
+    "sample",
+    "rabbitmq",
+    "reddit",
+    "gin-gonic"
+  ],
+  "image": "heroku/go:1.6",
+  "mount_dir": "src/github.com/dohantaur/hapy-hackathon-broker",
+  "website": "http://github.com/dohantaur/hapy-hackathon-broker",
+  "repository": "http://github.com/dohantaur/hapy-hackathon-broker"
+}
