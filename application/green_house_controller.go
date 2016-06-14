@@ -51,6 +51,7 @@ func (con *GreenHouseController) One(c *gin.Context) {
 		fmt.Println("cannot find green_house" )
 		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return 
 	}
 	fmt.Println("serial: [%s]", c.Param("id"))
 	fmt.Println("---------data-----------")
