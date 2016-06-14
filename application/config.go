@@ -19,9 +19,9 @@ func NewConfig() *Config {
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
-	mongoUrl := os.Getenv("MONGO_URL")
+	mongoUrl := os.Getenv("MONGODB_URI")
 	if port == "" {
-		log.Fatal("$MONGO_URL must be set")
+		log.Fatal("MONGODB_URI must be set")
 	}
 	mongoDBName := os.Getenv("MONGO_DB")
 	if mongoDBName == "" {
@@ -31,11 +31,11 @@ func NewConfig() *Config {
 	if ginMode == "" {
 		ginMode = "release"
 	}
-	rabbitUrl := os.Getenv("RABBIT_URL")
+	rabbitUrl := os.Getenv("CLOUDAMQP_URL")
 	if rabbitUrl == "" {
-		log.Fatal("$RABBIT_URL must be set")
+		log.Fatal("CLOUDAMQP_URL must be set")
 	}
-	redisUrl := os.Getenv("RABBIT_URL")
+	redisUrl := os.Getenv("REDIS_URL")
 	if redisUrl == "" {
 		log.Fatal("$REDIS_URL must be set")
 	}
