@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1352c2de-597d-4163-885c-9ded2eff1f7e" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/config.go" afterPath="$PROJECT_DIR$/application/config.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/rabbit.go" afterPath="$PROJECT_DIR$/application/rabbit.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/vendor/gopkg.in/mgo.v2/internal/scram/scram.go" afterPath="$PROJECT_DIR$/vendor/gopkg.in/mgo.v2/internal/scram/scram.go" />
-    </list>
+    <list default="true" id="1352c2de-597d-4163-885c-9ded2eff1f7e" name="Default" comment="" />
     <ignored path="hackathon-hapy-broker.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/out/" />
@@ -33,8 +28,8 @@
       <file leaf-file-name="rabbit.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/application/rabbit.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1344">
-              <caret line="75" column="30" selection-start-line="75" selection-start-column="30" selection-end-line="75" selection-end-column="30" />
+            <state relative-caret-position="84">
+              <caret line="60" column="26" selection-start-line="60" selection-start-column="22" selection-end-line="60" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -1009,8 +1004,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/application/rabbit.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1344">
-          <caret line="75" column="30" selection-start-line="75" selection-start-column="30" selection-end-line="75" selection-end-column="30" />
+        <state relative-caret-position="84">
+          <caret line="60" column="26" selection-start-line="60" selection-start-column="22" selection-end-line="60" selection-end-column="26" />
           <folding />
         </state>
       </provider>
