@@ -30,7 +30,7 @@ func ComputeData(data bson.M) bson.M {
 	lum := 0.0
 	moi := 0.0
 	ld.Add(data)
-	ld.m.Lock()
+	//ld.m.Lock()
 
 	for _, d := range ld.data {
 		fmt.Println(d)
@@ -43,7 +43,7 @@ func ComputeData(data bson.M) bson.M {
 			}
 		}
 	}
-	ld.m.Unlock()
+	//ld.m.Unlock()
 
 	if len(ld.data) > 0 {
 		length := float64(len(ld.data))
