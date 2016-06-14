@@ -35,7 +35,7 @@ func (r *Rabbit) SendAction(msg string) error {
 	err = ch.ExchangeDeclare(
 		"action2", // name
 		"fanout", // type
-		true,     // durable
+		false,     // durable
 		false,    // auto-deleted
 		false,    // internal
 		false,    // no-wait
