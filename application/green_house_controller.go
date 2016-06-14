@@ -48,7 +48,8 @@ func (con *GreenHouseController) One(c *gin.Context) {
 	var data = models.GreenHouse{}
 	err := col.Find(bson.M{"green_house_serial": c.Param("id")}).One(&data)
 	if err != nil {
-		fmt.Println("cannot find green_house: " + err)
+		fmt.Println("cannot find green_house" )
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 	}
 	fmt.Println("serial: [%s]", c.Param("id"))
