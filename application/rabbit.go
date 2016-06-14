@@ -33,22 +33,9 @@ func NewRabbit(c *Config) *Rabbit {
 		nil,      // arguments
 	)
 	if err != nil {
-		log.Fatal("cannot ExchangeDeclare")
+		log.Fatal("cannot QueueDeclare")
 	}
 
-	err = ch.Publish(
-		"",     // exchange
-		q.Name, // routing key
-		false,  // mandatory
-		false,  // immediate
-		amqp.Publishing {
-			ContentType: "text/plain",
-			Body:        []byte("hey ça marche!!!"),
-		})
-	if err != nil {
-		log.Fatal("cannot Publish")
-	}
-	fmt.Println("published")
 	return &Rabbit{
 		ActionChan: ch,
 		Conn:       conn,
@@ -78,7 +65,8 @@ func (r *Rabbit) SendAction(msg string) error {
 		nil,      // arguments
 	)
 	if err != nil {
-		log.Println("cannot ExchangeDeclare")
+		log.Println("cannot QueueDeclare")
+		log.Println(err)
 		return err
 	}
 	err = ch.Publish(
