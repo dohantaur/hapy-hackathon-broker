@@ -1,1 +1,1 @@
-web: hackahon-hapy-broker
+web: hapy-hackathon-broker
