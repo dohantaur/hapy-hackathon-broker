@@ -43,20 +43,15 @@ func (con *GreenHouseController) Post(c *gin.Context) {
 }
 
 func (con *GreenHouseController) One(c *gin.Context) {
-	fmt.Println("GreenHouseOne")
 	col := con.App.DataStore.MongoSession.DB(con.App.Config.MongoDBName).C("green_house")
 	var data = models.GreenHouse{}
-	err := col.Find(bson.M{"green_house_serial": c.Param("id")}).One(&data)
+	err := col.Find(bson.M{"serial": c.Param("id")}).One(&data)
 	if err != nil {
 		fmt.Println("cannot find green_house" )
 		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
-		return 
+		return
 	}
-	fmt.Println("serial: [%s]", c.Param("id"))
-	fmt.Println("---------data-----------")
-	fmt.Println(data)
-	fmt.Println("---------data-----------")
 	c.JSON(http.StatusOK, gin.H{"data": data})
 }
 
