@@ -1,8 +1,8 @@
 package application
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/fvbock/endless"
+	"github.com/gin-gonic/gin"
 )
 
 type App struct {
@@ -26,5 +26,5 @@ func NewApp(conf *Config, dataStore *DataStore, router *gin.Engine, rabbit *Rabb
 func (app *App) Start() {
 	Route(app)
 	// app.Router.Run(app.Config.Host + ":" + app.Config.Port)
-	endless.ListenAndServe(app.Config.Host + ":" + app.Config.Port, app.Router)
+	endless.ListenAndServe(app.Config.Host+":"+app.Config.Port, app.Router)
 }

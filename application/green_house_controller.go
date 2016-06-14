@@ -1,14 +1,15 @@
 package application
 
 import (
-	"github.com/gin-gonic/gin"
+	"encoding/json"
+	"fmt"
 	"github.com/dohantaur/hapy-hackathon-broker/models"
+	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"log"
 	"net/http"
 	"time"
-	"fmt"
 )
 
 type GreenHouseController struct {
@@ -47,7 +48,7 @@ func (con *GreenHouseController) One(c *gin.Context) {
 	var data = models.GreenHouse{}
 	err := col.Find(bson.M{"serial": c.Param("id")}).One(&data)
 	if err != nil {
-		fmt.Println("cannot find green_house" )
+		fmt.Println("cannot find green_house")
 		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
@@ -71,6 +72,26 @@ func (con *GreenHouseController) History(c *gin.Context) {
 
 func (con *GreenHouseController) Action(c *gin.Context) {
 	err := con.App.Rabbit.SendAction(c.DefaultQuery("name", "") + "::" + c.DefaultQuery("value", ""))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+	c.AbortWithStatus(http.StatusNoContent)
+}
+
+func (con *GreenHouseController) Program(c *gin.Context) {
+	var program bson.M
+	err := c.BindJSON(&program)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+	msg, err := json.Marshal(program)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+	err = con.App.Rabbit.SendProgram(msg)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return

@@ -2,8 +2,8 @@ package application
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/dohantaur/hapy-hackathon-broker/models"
+	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"log"

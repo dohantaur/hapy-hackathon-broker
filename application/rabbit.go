@@ -56,26 +56,70 @@ func (r *Rabbit) SendAction(msg string) error {
 		log.Println("cannot open channel: %s", err)
 		return err
 	}
-	q, err := ch.QueueDeclare(
+	err = ch.ExchangeDeclare(
 		"action", // name
-		false,    // durable
-		false,    // delete when unused
-		false,    // exclusive
+		"direct", // type
+		true,     // durable
+		false,    // auto-deleted
+		false,    // internal
 		false,    // no-wait
 		nil,      // arguments
 	)
 	if err != nil {
-		log.Println("cannot QueueDeclare")
+		log.Println("cannot exchange declare")
 		log.Println(err)
 		return err
 	}
 	err = ch.Publish(
-		"",     // exchange
-		q.Name, // routing key
-		false,  // mandatory
-		false,  // immediate
+		"action", // exchange
+		"",       // routing key
+		false,    // mandatory
+		false,    // immediate
 		amqp.Publishing{
 			ContentType: "text/plain",
+			Body:        []byte(msg),
+		})
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return nil
+}
+
+func (r *Rabbit) SendProgram(msg []byte) error {
+	fmt.Println("send program: [%s]", msg)
+	conn, err := amqp.Dial(os.Getenv("CLOUDAMQP_URL"))
+	if err != nil {
+		log.Println("cannot connect to rabbitmq")
+		return err
+	}
+	ch, err := conn.Channel()
+	defer ch.Close()
+	if err != nil {
+		log.Println("cannot open channel: %s", err)
+		return err
+	}
+	err = ch.ExchangeDeclare(
+		"program", // name
+		"direct",  // type
+		true,      // durable
+		false,     // auto-deleted
+		false,     // internal
+		false,     // no-wait
+		nil,       // arguments
+	)
+	if err != nil {
+		log.Println("cannot exchange declare")
+		log.Println(err)
+		return err
+	}
+	err = ch.Publish(
+		"action", // exchange
+		"",       // routing key
+		false,    // mandatory
+		false,    // immediate
+		amqp.Publishing{
+			ContentType: "application/json",
 			Body:        []byte(msg),
 		})
 	if err != nil {

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/dohantaur/hapy-hackathon-broker/application"
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"log"
 )
