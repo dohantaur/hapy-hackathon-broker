@@ -14,32 +14,8 @@ type Rabbit struct {
 }
 
 func NewRabbit(c *Config) *Rabbit {
-	conn, err := amqp.Dial(c.Rabbiturl)
-	if err != nil {
-		log.Fatal("cannot connect to rabbitmq")
-	}
-	defer conn.Close()
-	ch, err := conn.Channel()
-	defer ch.Close()
-	if err != nil {
-		log.Fatal("cannot open channel")
-	}
-	q, err := ch.QueueDeclare(
-		"action", // name
-		false,    // durable
-		false,    // delete when unused
-		false,    // exclusive
-		false,    // no-wait
-		nil,      // arguments
-	)
-	if err != nil {
-		log.Fatal("cannot QueueDeclare")
-	}
 
 	return &Rabbit{
-		ActionChan: ch,
-		Conn:       conn,
-		Queue:      &q,
 	}
 }
 
@@ -57,8 +33,8 @@ func (r *Rabbit) SendAction(msg string) error {
 		return err
 	}
 	err = ch.ExchangeDeclare(
-		"action", // name
-		"direct", // type
+		"action2", // name
+		"fanout", // type
 		true,     // durable
 		false,    // auto-deleted
 		false,    // internal
@@ -71,7 +47,7 @@ func (r *Rabbit) SendAction(msg string) error {
 		return err
 	}
 	err = ch.Publish(
-		"action", // exchange
+		"action2", // exchange
 		"",       // routing key
 		false,    // mandatory
 		false,    // immediate
