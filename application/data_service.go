@@ -24,7 +24,8 @@ func (ld *lastData) Add(d bson.M) {
 var ld *lastData
 
 func ComputeData(data bson.M) bson.M {
-	temp := 0.0
+	return data
+	/*temp := 0.0
 	hum := 0.0
 	lum := 0.0
 	moi := 0.0
@@ -70,7 +71,7 @@ func ComputeData(data bson.M) bson.M {
 		"m": moi,
 	}
 
-	return computed
+	return computed*/
 }
 
 func init() {

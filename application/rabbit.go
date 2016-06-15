@@ -15,8 +15,7 @@ type Rabbit struct {
 
 func NewRabbit(c *Config) *Rabbit {
 
-	return &Rabbit{
-	}
+	return &Rabbit{}
 }
 
 func (r *Rabbit) SendAction(msg string) error {
@@ -34,12 +33,12 @@ func (r *Rabbit) SendAction(msg string) error {
 	}
 	err = ch.ExchangeDeclare(
 		"action2", // name
-		"fanout", // type
+		"fanout",  // type
 		false,     // durable
-		false,    // auto-deleted
-		false,    // internal
-		false,    // no-wait
-		nil,      // arguments
+		false,     // auto-deleted
+		false,     // internal
+		false,     // no-wait
+		nil,       // arguments
 	)
 	if err != nil {
 		log.Println("cannot exchange declare")
@@ -48,9 +47,9 @@ func (r *Rabbit) SendAction(msg string) error {
 	}
 	err = ch.Publish(
 		"action2", // exchange
-		"",       // routing key
-		false,    // mandatory
-		false,    // immediate
+		"",        // routing key
+		false,     // mandatory
+		false,     // immediate
 		amqp.Publishing{
 			ContentType: "text/plain",
 			Body:        []byte(msg),
