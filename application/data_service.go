@@ -1,7 +1,7 @@
 package application
 
 import (
-	"fmt"
+	//"fmt"
 	"gopkg.in/mgo.v2/bson"
 	"sync"
 )
