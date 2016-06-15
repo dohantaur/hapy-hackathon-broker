@@ -11,5 +11,5 @@ func Route(app *App) {
 	app.Router.GET("green_house/:id", GreenHouseController.One)
 	app.Router.GET("green_house/:id/history", GreenHouseController.History)
 	app.Router.GET("green_house/:id/action", GreenHouseController.Action)
-	app.Router.POST("green_houses/:id/program", GreenHouseController.Program)
+	app.Router.POST("green_house/:id/program", GreenHouseController.Program)
 }

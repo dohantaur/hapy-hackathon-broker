@@ -76,8 +76,8 @@ func (r *Rabbit) SendProgram(msg []byte) error {
 	}
 	err = ch.ExchangeDeclare(
 		"program", // name
-		"direct",  // type
-		true,      // durable
+		"fanout",  // type
+		false,      // durable
 		false,     // auto-deleted
 		false,     // internal
 		false,     // no-wait
@@ -89,7 +89,7 @@ func (r *Rabbit) SendProgram(msg []byte) error {
 		return err
 	}
 	err = ch.Publish(
-		"action", // exchange
+		"program", // exchange
 		"",       // routing key
 		false,    // mandatory
 		false,    // immediate
